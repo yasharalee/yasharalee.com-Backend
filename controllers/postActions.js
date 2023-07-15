@@ -1,4 +1,5 @@
 const blogPost = require("../models/blogPost");
+const Comment = require("../models/comment.js");
 
 // req.user
 

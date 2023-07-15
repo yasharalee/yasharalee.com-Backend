@@ -18,12 +18,16 @@ const commentSchema = new mongoose.Schema({
     default: Date.now,
   },
   likes: {
-    type: Number,
-    default: 0,
+    type: [mongoose.Schema.Types.ObjectId],
+    default:[],
   },
   dislikes: {
-    type: Number,
-    default: 0,
+    type: [mongoose.Schema.Types.ObjectId],
+    default: [],
+  },
+  reported: {
+    type: [mongoose.Schema.Types.ObjectId],
+    default: [],
   },
 });
 
