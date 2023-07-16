@@ -28,7 +28,7 @@ const getComments = async (req, res) => {
 
     const comments = await Comment.find({ blogPost: blogPostId })
       .populate("author", "_id username")
-      .populate("likes") 
+      .populate("likes")
       .sort({ createdAt: -1 });
 
     return res.status(200).json({ comments });
@@ -38,6 +38,8 @@ const getComments = async (req, res) => {
 };
 
 const deleteComment = async (req, res) => {
+
+
   try {
     const { commentId } = req.params;
 
@@ -47,7 +49,7 @@ const deleteComment = async (req, res) => {
       return res.status(404).json({ error: "Comment not found" });
     }
 
-    return res.status(200).json({ message: "Comment deleted successfully" });
+    return res.status(200).json({ isDeleted: true });
   } catch (error) {
     console.log("Error deleting comment:", error);
     return res.status(500).json({ error: "Internal server error" });

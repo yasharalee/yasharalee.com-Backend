@@ -122,9 +122,9 @@ const postReactions = async (req, res) => {
 const getAPost = async (req, res) => {
   const { postId } = req.body;
 
-  if (!postId) {
-    throw new Error({ error: "postId Id has not been sent" });
-  }
+    if (!postId) {
+      throw new Error({ error: "postId Id has not been sent" });
+    }
   try {
     const thePost = await blogPost.findOne({ _id: postId });
 
@@ -140,6 +140,8 @@ const getAPost = async (req, res) => {
 
 //delete
 const deleteAPost = async (req, res) => {
+
+
   const { postId } = req.body;
 
   if (!postId) {

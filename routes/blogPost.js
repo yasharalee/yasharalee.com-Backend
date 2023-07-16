@@ -3,7 +3,7 @@ const router = express.Router();
 const { verifyToken } = require("../utils/JwtUtils");
 const postActions = require("../controllers/postActions");
 const commentActions = require("../controllers/commentActions");
-
+const { makeSureIsOwner } = require("../middleware/authorize");
 
 // must make sure the user is him/her self
 router.post("/sendPost", verifyToken, postActions.sendPost);
@@ -15,17 +15,16 @@ router.post("/postReactions", verifyToken, postActions.postReactions);
 
 router.get("/getAPost", verifyToken, postActions.getAPost);
 
-router.delete("/deleteAPost", verifyToken, postActions.deleteAPost);
+router.delete("/deleteAPost", verifyToken, makeSureIsOwner("postId"), postActions.deleteAPost);
 
 router.post("/addComment", verifyToken, commentActions.addComment);
 
 router.get("/getComments/:blogPostId", verifyToken, commentActions.getComments);
 
-router.delete("/deleteComment/:commentId",verifyToken,commentActions.deleteComment);
+router.delete("/deleteComment/:commentId", verifyToken, makeSureIsOwner("commentId"), commentActions.deleteComment);
+
 
 router.post("/commentReactions", verifyToken, commentActions.commentReactions);
-
-
 
 module.exports = router;
 

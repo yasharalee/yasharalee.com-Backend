@@ -16,7 +16,9 @@ const validateAndNormalizeEmail = (field) => {
   return [body(field).isEmail().normalizeEmail().run()];
 };
 
-module.exports = { 
-    findUserByEmailOrUsername, 
-    validateAndNormalizeEmail 
+
+
+module.exports = {
+  findUserByEmailOrUsername,
+  validateAndNormalizeEmail,
 };
