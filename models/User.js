@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
-const BlogPost = require("./blogPost");
-const Comment = require("./comment");
+const BlogPost = require("./blogPostSchema");
+const Comment = require("./commentSchema");
 
 const loginHistorySchema = new mongoose.Schema({
   ipAddress: {
@@ -33,35 +33,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  name: {
-    type: String,
-  },
-  dateOfBirth: {
-    type: Date,
-  },
-  gender: {
-    type: String,
-    enum: ["female", "male", "transgender", "prefer not to declare", "other"],
-    default: "prefer not to declare",
-  },
-  profilePicture: {
-    type: String,
-  },
-  biography: {
-    type: String,
-  },
-  contactInformation: {
-    phone: {
-      type: String,
-    },
-    address: {
-      type: String,
-    },
-  },
-  socialMediaLinks: {
-    type: mongoose.Schema.Types.Mixed,
-    default: {},
-  },
+
   role: {
     type: String,
     enum: ["first-admin", "second-admin", "third-admin", "owner", "user"],
@@ -82,7 +54,7 @@ const userSchema = new mongoose.Schema({
   },
   reportThreshold: {
     type: Number,
-    default: 3,
+    default: 30,
   },
   loyaltyPoints: {
     type: Number,
@@ -91,10 +63,11 @@ const userSchema = new mongoose.Schema({
   passwordResetToken: {
     type: String,
   },
+
   loginHistory: [loginHistorySchema],
-  blogPosts: [{ type: mongoose.Schema.Types.ObjectId, ref: "BlogPost" }],
-  comments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment" }],
- createdAt: {
+  // blogPosts: [{ type: mongoose.Schema.Types.ObjectId, ref: "BlogPost" }],
+  // comments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment" }],
+  createdAt: {
     type: Date,
     default: Date.now,
   },

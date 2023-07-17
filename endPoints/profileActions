@@ -1,0 +1,78 @@
+const profile = require("../models/profileSchema");
+
+/*
+/delete/editProfile
+/get/getProfileData/:profile
+/delete/deleteProfile/:profile
+*/
+
+// PUT
+const editProfile = async (req, res, next) => {
+  const userId = req.user._id;
+  try {
+    if (Object.keys(req.body).length === 0) {
+      return res.status(400).json({ error: "No changes applied" });
+    }
+
+    const updatedProfile = await profile.findOneAndModify(
+      { profileOwner: userId },
+      { $set: req.body },
+      { upsert: true, returnNewDocument: true }
+    );
+
+    return res
+      .status(200)
+      .json({ message: "Profile updated", profile: updatedProfile });
+  } catch (err) {
+    return res
+      .status(500)
+      .json({ error: err.message || "Internal Server Error" });
+  }
+};
+
+//get
+const getProfileData = async (req, res) => {
+  const { profile } = req.params;
+
+  if (!profile) {
+    throw new Error({ error: "profile Id has not been sent" });
+  }
+  try {
+    const theProfile = await blogPost.findOne({ _id: profile });
+
+    if (theProfile != null) {
+      res.status(200).json({ theProfile });
+    } else {
+      res.status(404).json({ error: "Profile Not found" });
+    }
+  } catch (err) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+//delete
+const deleteProfile = async (req, res) => {
+  const { profile } = req.params;
+
+  if (!profile) {
+    throw new Error("profile has not been sent");
+  }
+
+  try {
+    const deletedProfile = await blogPost.findByIdAndDelete({ _id: profile });
+
+    if (deletedProfile) {
+      res.status(200).json({ isDeleted: true });
+    } else {
+      res.status(404).json({ error: "profile not found" });
+    }
+  } catch (err) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+module.exports = {
+  editProfile,
+  getProfileData,
+  deleteProfile,
+};

@@ -1,5 +1,5 @@
-const blogPost = require("../models/blogPost");
-const Comment = require("../models/comment.js");
+const blogPost = require("../models/blogPostSchema");
+const Comment = require("../models/commentSchema");
 
 // req.user
 
@@ -47,14 +47,14 @@ const MyPosts = async (req, res) => {
 //post
 const postReactions = async (req, res) => {
   try {
-    const { postId, action } = req.body;
+    const { resourceId, action } = req.body;
     const reactorId = req.user._id;
 
-    if (!postId || !action) {
+    if (!resourceId || !action) {
       throw new Error({ error: "Invalid Request" });
     }
 
-    const foundPost = await blogPost.findOne({ _id: postId });
+    const foundPost = await blogPost.findOne({ _id: resourceId });
 
     if (foundPost !== null) {
       if (action === "like") {
@@ -120,13 +120,13 @@ const postReactions = async (req, res) => {
 
 //get
 const getAPost = async (req, res) => {
-  const { postId } = req.body;
+  const { resourceId } = req.body;
 
-    if (!postId) {
-      throw new Error({ error: "postId Id has not been sent" });
-    }
+  if (!resourceId) {
+    throw new Error({ error: "resourceId Id has not been sent" });
+  }
   try {
-    const thePost = await blogPost.findOne({ _id: postId });
+    const thePost = await blogPost.findOne({ _id: resourceId });
 
     if (thePost != null) {
       res.status(200).json({ thePost });
@@ -140,18 +140,19 @@ const getAPost = async (req, res) => {
 
 //delete
 const deleteAPost = async (req, res) => {
+  const { resourceId } = req.body;
 
-
-  const { postId } = req.body;
-
-  if (!postId) {
-    throw new Error("postId has not been sent");
+  if (!resourceId) {
+    throw new Error("resourceId has not been sent");
   }
 
   try {
-    const deletedPost = await blogPost.findByIdAndDelete({ _id: postId });
+    const deletedPost = await blogPost.findOneAndDelete({ _id: resourceId });
 
     if (deletedPost) {
+      // Delete all reactions for this Post
+      await Comment.deleteMany({ author: req.user._id });
+
       res.status(200).json({ isDeleted: true });
     } else {
       res.status(404).json({ error: "Post not found" });
@@ -166,5 +167,5 @@ module.exports = {
   MyPosts,
   postReactions,
   getAPost,
-  deleteAPost
+  deleteAPost,
 };

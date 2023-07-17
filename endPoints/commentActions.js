@@ -1,17 +1,18 @@
-const Comment = require("../models/comment.js");
+const Comment = require("../models/commentSchema");
+
 
 // Add a comment to a blog post
 const addComment = async (req, res) => {
   try {
-    const { blogPostId, content } = req.body;
+    const { resourceId, content } = req.body;
 
-    if (!blogPostId || !content) {
+    if (!resourceId || !content) {
       return res.status(400).json({ error: "Invalid request" });
     }
 
     const comment = await Comment.create({
       author: req.user._id,
-      blogPost: blogPostId,
+      blogPost: resourceId,
       content,
     });
 
@@ -24,9 +25,9 @@ const addComment = async (req, res) => {
 // Fetch comments for a blog post
 const getComments = async (req, res) => {
   try {
-    const { blogPostId } = req.params;
+    const { resourceId } = req.params;
 
-    const comments = await Comment.find({ blogPost: blogPostId })
+    const comments = await Comment.find({ blogPost: resourceId })
       .populate("author", "_id username")
       .populate("likes")
       .sort({ createdAt: -1 });
@@ -41,9 +42,11 @@ const deleteComment = async (req, res) => {
 
 
   try {
-    const { commentId } = req.params;
+    const { resourceId } = req.params;
 
-    const deletedComment = await Comment.findByIdAndDelete(commentId);
+    console.log(resourceId);
+
+    const deletedComment = await Comment.findByIdAndDelete(resourceId);
 
     if (!deletedComment) {
       return res.status(404).json({ error: "Comment not found" });
@@ -59,14 +62,14 @@ const deleteComment = async (req, res) => {
 // Like/Dislike/Report a comment
 const commentReactions = async (req, res) => {
   try {
-    const { commentId, action } = req.body;
+    const { resourceId, action } = req.body;
     const reactorId = req.user._id;
 
-    if (!commentId || !action) {
+    if (!resourceId || !action) {
       throw new Error("Invalid request");
     }
 
-    const foundComment = await Comment.findById(commentId);
+    const foundComment = await Comment.findById(resourceId);
 
     if (!foundComment) {
       return res.status(404).json({ error: "Comment not found" });

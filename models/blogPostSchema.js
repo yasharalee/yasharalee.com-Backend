@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const Comment = require("./comment");
+const Comment = require("./commentSchema");
 
 const blogPostSchema = new mongoose.Schema({
   author: {
@@ -18,6 +18,18 @@ const blogPostSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  isPublic: {
+    type: Boolean,
+    default: false,
+  },
+  likesEnabaled: {
+    type: Boolean,
+    default: false,
+  },
+  commentsEnabaled: {
+    type: Boolean,
+    default: false,
+  },
   createdAt: {
     type: Date,
     default: Date.now,
@@ -26,6 +38,7 @@ const blogPostSchema = new mongoose.Schema({
   comments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment" }],
   likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "user" }],
   dislikes: [{ type: mongoose.Schema.Types.ObjectId, ref: "user" }],
+  onlyVisibleTo: [{ type: mongoose.Schema.Types.ObjectId, ref: "user" }],
 });
 
 const BlogPost = mongoose.model("BlogPost", blogPostSchema);

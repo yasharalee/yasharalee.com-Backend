@@ -1,10 +1,14 @@
 const jwt = require("jsonwebtoken");
-const User = require("../models/User");
-const blogPost = require("../models/blogPost");
-const comment = require("../models/comment");
+const mongoose = require("mongoose");
+
+const blogPost = require("../models/blogPostSchema");
+const comment = require("../models/commentSchema");
+const profile = require("../models/profileSchema");
+
+// Rest of the code...
 
 // Middleware to verify JWT and check user's role
-const authorize = (requiredRole) => {
+const authorizeRole = (requiredRole) => {
   return (req, res, next) => {
     // Get the JWT token from the request headers, cookies, or query parameters
     const token = req.headers.authorization;
@@ -26,7 +30,6 @@ const authorize = (requiredRole) => {
       req.userId = userId;
       req.role = role;
 
-      // Call the next middleware or route handler
       next();
     } catch (err) {
       console.error(err);
@@ -35,55 +38,63 @@ const authorize = (requiredRole) => {
   };
 };
 
-const makeSureIsOwner = (paramName) => {
+const makeSureIsOwner = (modelName) => {
   return async (req, res, next) => {
-    let isAuthorisedToEditOrDeleteThisPost = false;
+    const userId = req.user._id;
 
-    if (paramName === "postId") {
-      const { _id } = req.user;
-      const { postId } = req.body;
+    const resourceIds = [
+      req.body.resourceId,
+      req.params.resourceId,
+      req.query.resourceId,
+    ].filter(Boolean);
 
-      try {
-        const userId = _id;
-        const thePost = await blogPost.findOne({ _id: postId });
+    console.log(resourceIds);
+    const message = "Not Authorized";
+    try {
+      if (modelName == "Post") {
+        const foundBlog = await blogPost.findById(resourceIds[0]);
 
-        if (!thePost) {
-          return res.status(404).json({ error: "Post not found" });
+        if (!foundBlog) {
+          return res.status(404).json({ error: "Not Found" });
         }
 
-        if (String(userId) === String(thePost.author)) {
-          isAuthorisedToEditOrDeleteThisPost = true;
+        if (foundBlog.author.equals(new mongoose.Types.ObjectId(userId))) {
+          next();
         } else {
-          return res.status(401).json({ error: "You are not authorized" });
+          return res.status(403).json({ error: message });
         }
-      } catch (err) {
-        return res.status(403).json({ error: err.message });
-      }
-    } else if (paramName === "commentId") {
-      const { _id } = req.user;
-      const { commentId } = req.params;
+      } else if (modelName == "Comment") {
+        const foundComment = await comment.findById(resourceIds[0]);
 
-      const theComment = await comment.findOne({ _id: commentId });
+        if (!foundComment) {
+          return res.status(404).json({ error: "Not Found" });
+        }
 
-      if (!theComment) {
-        return res.status(404).json({ error: "Comment not found" });
-      }
+        if (foundComment.author.equals(new mongoose.Types.ObjectId(userId))) {
+          next();
+        } else {
+          return res.status(403).json({ error: message });
+        }
+      } else if (modelName == "Profile") {
+        const foundProfile = await profile.findById(resourceIds[0]);
 
-      if (String(_id) === String(theComment.author)) {
-        isAuthorisedToEditOrDeleteThisPost = true;
+        if (!foundProfile) {
+          return res.status(404).json({ error: "Not Found" });
+        }
+
+        if (foundProfile.owner.equals(new mongoose.Types.ObjectId(userId))) {
+          next();
+        } else {
+          return res.status(403).json({ error: message });
+        }
       } else {
-        return res.status(401).json({ error: "You are not authorized" });
+        return res.status(403).json({ error: " Not Authorized" });
       }
-    } else {
-      return res.status(400).json({ error: "Invalid request" });
-    }
-
-    if (isAuthorisedToEditOrDeleteThisPost) {
-      next();
-    } else {
-      return res.status(403).json({ error: "Not authorized for this action" });
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json({ error: "Internal Server Error" });
     }
   };
 };
 
-module.exports = { authorize, makeSureIsOwner };
+module.exports = { authorizeRole, makeSureIsOwner };
