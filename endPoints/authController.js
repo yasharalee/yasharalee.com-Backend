@@ -1,5 +1,5 @@
 const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
+const jwtUtils = require("../utils/JwtUtils");
 const { body, validationResult } = require("express-validator");
 const User = require("../models/User");
 const { findUserByEmailOrUsername } = require("../utils/DbUtils");
@@ -35,12 +35,11 @@ const register = async (req, res, next) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // check validations and throw an exception with the first one found in case of failure
     const emailExist = await findUserByEmailOrUsername({ normalizedEmail });
     const usernameExist = await findUserByEmailOrUsername({ username });
 
     if (emailExist || usernameExist) {
-      return res.status(409).json({ error: "User already exist" });
+      return res.status(409).json({ error: "User already exists" });
     }
 
     const user = await User.create({
@@ -58,26 +57,30 @@ const register = async (req, res, next) => {
       const payload = {
         userId: findUser._id.toString(),
         userEmail: findUser.normalizedEmail,
-        userEmail: findUser.username,
+        userUsername: findUser.username,
         role: findUser.role,
       };
 
-      const token = jwt.sign(payload, process.env.JWT_SECRET, {
-        expiresIn: 360000,
-      });
+      const token = jwtUtils.generateToken(payload);
 
-      res.status(201).json({ access_token: token });
+      jwtUtils.setHttpOnlyCookie(
+        res,
+        "access-token",
+        token,
+        new Date(Date.now() + 1 * 60 * 60 * 1000) // Expires in 1 hour
+      );
+
+     // res.status(201).json({ access_token: token });
+     res.status(201).json({ isCreated: true });
     } catch (err) {
       console.error(err);
-      res.status(500).json({ error: "try to login" });
+      res.status(500).json({ error: "Failed to register user" });
     }
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Failed to register user" });
   }
 };
-
-// Login Endpoint
 
 const login = async (req, res) => {
   try {
@@ -100,8 +103,6 @@ const login = async (req, res) => {
       return res.status(400).json({ errors: errors.array() });
     }
 
-    // const { emailOrUsername, password } = req.body;
-
     const user = await User.findOne({
       $or: [
         { normalizedEmail: emailOrUsername },
@@ -122,13 +123,18 @@ const login = async (req, res) => {
     const payload = {
       userId: user._id.toString(),
       userEmail: user.email,
-      userEmail: user.username,
+      userUsername: user.username,
       role: user.role,
     };
 
-    const token = jwt.sign(payload, process.env.JWT_SECRET, {
-      expiresIn: 360000,
-    });
+    const token = jwtUtils.generateToken(payload);
+
+    jwtUtils.setHttpOnlyCookie(
+      res,
+      "access-token",
+      token,
+      new Date(Date.now() + 1 * 60 * 60 * 1000) // Expires in 1 hour
+    );
 
     const loginHistory = {
       ipAddress: req.ip,
@@ -143,7 +149,7 @@ const login = async (req, res) => {
 
     await user.save();
 
-    res.json({ access_token: token, user });
+   res.json({ access_token: token, user });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Failed to log in" });
