@@ -149,7 +149,7 @@ const login = async (req, res) => {
 
     await user.save();
 
-   res.json({ access_token: token, user });
+   res.json({ access_token: token });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Failed to log in" });
