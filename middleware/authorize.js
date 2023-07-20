@@ -5,13 +5,11 @@ const blogPost = require("../models/blogPostSchema");
 const comment = require("../models/commentSchema");
 const profile = require("../models/profileSchema");
 
-// Rest of the code...
-
 // Middleware to verify JWT and check user's role
 const authorizeRole = (requiredRole) => {
   return (req, res, next) => {
-    // Get the JWT token from the request headers, cookies, or query parameters
-    const token = req.headers.authorization;
+    const token = req.cookies["access-token"]; // Retrieve the JWT token from the cookies
+
     if (!token) {
       return res.status(401).json({ error: "Unauthorized" });
     }
@@ -40,7 +38,7 @@ const authorizeRole = (requiredRole) => {
 
 const makeSureIsOwner = (modelName) => {
   return async (req, res, next) => {
-    const userId = req.user._id;
+    const userId = req.userId; // Retrieve the user ID from the request object
 
     const resourceIds = [
       req.body.resourceId,

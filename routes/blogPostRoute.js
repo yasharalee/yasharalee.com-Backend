@@ -4,9 +4,7 @@ const { verifyToken } = require("../utils/JwtUtils");
 const postActions = require("../endPoints/postActions");
 const commentActions = require("../endPoints/commentActions");
 const { makeSureIsOwner } = require("../middleware/authorize");
-const cors = require("cors");
 
-router.use(cors());
 
 // must make sure the user is him/her self
 router.post("/sendPost", verifyToken, postActions.sendPost);

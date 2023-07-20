@@ -3,9 +3,7 @@ const router = express.Router();
 const profileActions = require("../endPoints/profileActions");
 const { verifyToken } = require("../utils/JwtUtils");
 const { makeSureIsOwner } = require("../middleware/authorize");
-const cors = require("cors");
 
-router.use(cors());
 
 router.put("/editProfile", profileActions.editProfile);
 
