@@ -22,7 +22,6 @@ const sendPost = async (req, res) => {
       published,
     });
   } catch (err) {
-    console.log("Error creating Blog Post", err);
     res.status(500).json({ error: err });
   }
 

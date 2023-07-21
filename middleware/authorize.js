@@ -17,7 +17,7 @@ const authorizeRole = (requiredRole) => {
     try {
       // Verify the token and decode the payload
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      const { userId, role } = decoded;
+      const { userId, role } = decoded.payload;
 
       // Check if the user's role matches the required role
       if (role !== requiredRole) {
@@ -38,15 +38,13 @@ const authorizeRole = (requiredRole) => {
 
 const makeSureIsOwner = (modelName) => {
   return async (req, res, next) => {
-    const userId = req.userId; // Retrieve the user ID from the request object
-
+    const userId = req.user._id; // Retrieve the user ID from the request object
     const resourceIds = [
       req.body.resourceId,
       req.params.resourceId,
       req.query.resourceId,
     ].filter(Boolean);
 
-    console.log(resourceIds);
     const message = "Not Authorized";
     try {
       if (modelName == "Post") {

@@ -9,8 +9,8 @@ const generateToken = (payload) => {
 };
 
 const verifyToken = (req, res, next) => {
-  const token = req.cookies["access-token"];
-  //token = authHeader && authHeader.split(" ")[1]; 
+
+  const token = req.cookies["access-token"]; 
 
   if (!token) {
     return res.status(401).json({ error: "Unauthorized" });
@@ -23,10 +23,11 @@ const verifyToken = (req, res, next) => {
     }
 
     try {
-      const { userId } = decodedToken;
+      const { userId } = decodedToken.payload;
 
       // Fetch the user from the database
       const user = await User.findById(userId);
+
 
       if (!user) {
         return res.status(404).json({ error: "User not found" });
@@ -60,7 +61,7 @@ const setHttpOnlyCookie = (res, name, value, expiration) => {
     httpOnly: true, // Make the cookie HTTP-only
     secure: true, // Set the "Secure" flag to ensure it is transmitted only over HTTPS
     expires: expiration, // Set the expiration time for the cookie
-    sameSite: 'strict', // Define the same-site policy for the cookie
+    sameSite: "None", // Define the same-site policy for the cookie
   };
 
   res.cookie(name, value, options); // Set the cookie in the response

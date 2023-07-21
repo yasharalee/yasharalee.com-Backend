@@ -44,8 +44,6 @@ const deleteComment = async (req, res) => {
   try {
     const { resourceId } = req.params;
 
-    console.log(resourceId);
-
     const deletedComment = await Comment.findByIdAndDelete(resourceId);
 
     if (!deletedComment) {
@@ -54,7 +52,6 @@ const deleteComment = async (req, res) => {
 
     return res.status(200).json({ isDeleted: true });
   } catch (error) {
-    console.log("Error deleting comment:", error);
     return res.status(500).json({ error: "Internal server error" });
   }
 };
@@ -110,7 +107,6 @@ const commentReactions = async (req, res) => {
     await foundComment.save();
     return res.status(200).json({ comment: foundComment });
   } catch (error) {
-    console.log("Error handling comment reaction:", error);
     return res.status(500).json({ error: "Internal server error" });
   }
 };
