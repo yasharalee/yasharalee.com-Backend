@@ -1,6 +1,5 @@
 const Comment = require("../models/commentSchema");
 
-
 // Add a comment to a blog post
 const addComment = async (req, res) => {
   try {
@@ -39,8 +38,6 @@ const getComments = async (req, res) => {
 };
 
 const deleteComment = async (req, res) => {
-
-
   try {
     const { resourceId } = req.params;
 

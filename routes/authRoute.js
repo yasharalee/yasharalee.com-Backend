@@ -3,7 +3,9 @@ const router = express.Router();
 const authController = require("../endPoints/authController");
 const { verifyToken } = require("../utils/JwtUtils");
 const { authorizeRole } = require("../middleware/authorize");
+const cors = require("cors");
 
+router.use(cors());
 
 router.post("/register", authController.register);
 
