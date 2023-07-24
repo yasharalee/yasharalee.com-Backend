@@ -71,8 +71,8 @@ const register = async (req, res, next) => {
         new Date(Date.now() + 1 * 60 * 60 * 1000) // Expires in 1 hour
       );
 
-     // res.status(201).json({ access_token: token });
-     res.status(201).json({ isCreated: true });
+      // res.status(201).json({ access_token: token });
+      res.status(201).json({ isCreated: true });
     } catch (err) {
       console.error(err);
       res.status(500).json({ error: "Failed to register user" });
@@ -150,7 +150,7 @@ const login = async (req, res) => {
 
     await user.save();
 
-   res.json({ access_token: token });
+    res.json({ access_token: token });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Failed to log in" });
@@ -158,18 +158,30 @@ const login = async (req, res) => {
 };
 
 const check = async (req, res) => {
-  res.status(200).json({ Received: true });
+
+  const isLogged = !!req.user;
+
+  res.status(200).json({ isLogged });
 };
 
-const checkt = async (req, res) => {
-  const { userId } = req.body;
-  const user = await User.findOne({ _id: userId });
-  res.json(user);
+
+
+const signOut = async (req, res) => {
+  res.cookie('access-token', '', {
+    expires: new Date(0),
+    httpOnly: true,
+    secure: false, // Set this to true if your site uses HTTPS
+    sameSite: 'strict',
+    path: '/', // Set the same path as used when the cookie was set
+  });
+
+  // Respond with a success status
+  res.sendStatus(200);
 };
 
 module.exports = {
   login,
   register,
   check,
-  checkt,
+  signOut,
 };

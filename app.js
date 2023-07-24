@@ -28,8 +28,8 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(
   cors({
     origin: [
-      "http://98.246.0.185",
-      // "http://localhost:3000",
+      "https://98.246.0.185",
+      "https://localhost:3000",
       "https://selinaystore.com",
     ],
     credentials: true, 
