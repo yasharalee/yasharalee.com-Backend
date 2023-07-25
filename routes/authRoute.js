@@ -15,7 +15,6 @@ router.get("/check",verifyToken, authController.check);
 
 router.post(
   "/signOut",
-  verifyToken,
   authController.signOut
 );
 
