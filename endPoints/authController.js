@@ -71,7 +71,6 @@ const register = async (req, res, next) => {
         new Date(Date.now() + 1 * 60 * 60 * 1000) // Expires in 1 hour
       );
 
-      // res.status(201).json({ access_token: token });
       res.status(201).json({ isCreated: true });
     } catch (err) {
       console.error(err);
@@ -150,7 +149,7 @@ const login = async (req, res) => {
 
     await user.save();
 
-    res.json({ access_token: token });
+    res.json({ user});
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Failed to log in" });
