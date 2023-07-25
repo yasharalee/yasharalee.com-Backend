@@ -29,7 +29,7 @@ app.use(
   cors({
     origin: [
       "https://98.246.0.185",
-      "https://localhost:3000",
+      //"https://localhost:3000",
       "https://selinaystore.com",
     ],
     credentials: true, 
