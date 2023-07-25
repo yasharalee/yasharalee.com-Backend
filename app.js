@@ -25,13 +25,15 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
+const origins = [
+  "https://98.246.0.185",
+  "https://localhost:3000",
+  "https://selinaystore.com",
+];
+
 app.use(
   cors({
-    origin: [
-      "https://98.246.0.185",
-      "https://localhost:3000",
-      "https://selinaystore.com",
-    ],
+    origin : "*",
     credentials: true, 
   })
 );
