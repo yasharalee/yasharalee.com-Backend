@@ -167,16 +167,9 @@ const check = async (req, res) => {
 
 
 const signOut = async (req, res) => {
-  res.cookie('access-token', '', {
-    expires: new Date(0),
-    httpOnly: true,
-    secure: false, // Set this to true if your site uses HTTPS
-    sameSite: 'strict',
-    path: '/', // Set the same path as used when the cookie was set
-  });
+  res.clearCookie('access-token', { httpOnly: true });
 
-  // Respond with a success status
-  res.sendStatus(200);
+  return res.status(200).json({ message: 'Logged out successfully' });
 };
 
 module.exports = {
