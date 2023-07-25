@@ -59,7 +59,7 @@ const verifyToken = (req, res, next) => {
 const setHttpOnlyCookie = (res, name, value, expiration) => {
   const options = {
     httpOnly: true, // Make the cookie HTTP-only
-   secure: false, // Set this to true if site uses HTTPS
+   //secure: false, // Set this to true if site uses HTTPS
     expires: expiration, // Set the expiration time for the cookie
     sameSite: "Strict", // Define the same-site policy for the cookie
   };
