@@ -35,7 +35,7 @@ const origins = [
 
 app.use(
   cors({
-    origin : "*",
+    origin : origins,
     credentials: true, 
   })
 );
