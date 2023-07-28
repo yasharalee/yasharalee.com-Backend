@@ -28,8 +28,8 @@ mongoose
     } else {
       // Create HTTPS server for local development using self-signed certificates
       const httpsOptions = {
-        key: fs.readFileSync('path/to/private-key.pem'),
-        cert: fs.readFileSync('path/to/certificate.pem')
+        key: fs.readFileSync('private-key.pem'),
+        cert: fs.readFileSync('certificate.pem')
       };
       https.createServer(httpsOptions, app).listen(PORT, () => {
         console.log(`Server is running on port ${PORT}`);
