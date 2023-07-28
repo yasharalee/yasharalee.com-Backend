@@ -25,16 +25,23 @@ mongoose
       https.createServer(httpsOptions, app).listen(PORT, () => {
         console.log(`Server is running on port ${PORT}`);
       });
-    } else {
-      // Create HTTPS server for local development using self-signed certificates
-      const httpsOptions = {
-        key: fs.readFileSync('private-key.pem'),
-        cert: fs.readFileSync('certificate.pem')
-      };
-      https.createServer(httpsOptions, app).listen(PORT, () => {
-        console.log(`Server is running on port ${PORT}`);
-      });
-    }
+    } else
+    //  if (!isProduction) {
+    //   // Create HTTPS server for local development using self-signed certificates
+    //   const httpsOptions = {
+    //     key: fs.readFileSync('private-key.pem'),
+    //     cert: fs.readFileSync('certificate.pem')
+    //   };
+    //   https.createServer(httpsOptions, app).listen(PORT, () => {
+    //     console.log(`Server is running on port ${PORT}`);
+    //   });
+    // }
+      console.warn("Warning: The server is running in development mode without HTTPS.");
+    // Create HTTP server for local development
+    http.createServer(app).listen(PORT, () => {
+      console.log(`Server is running on port ${PORT}`);
+    });
+  
   })
   .catch((err) => {
     console.error("Error connecting to MongoDB:", err);
