@@ -1,7 +1,15 @@
+const https = require('https');
+const fs = require('fs');
 const mongoose = require("mongoose");
 const app = require("./app");
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
+
+// Load SSL certificates
+const httpsOptions = {
+  key: fs.readFileSync('private-key.pem'),
+  cert: fs.readFileSync('certificate.pem')
+};
 
 // Connect to MongoDB
 mongoose
@@ -12,7 +20,8 @@ mongoose
   .then(() => {
     console.log("Connected to MongoDB");
 
-    app.listen(PORT, () => {
+    // Create HTTPS server
+    https.createServer(httpsOptions, app).listen(PORT, () => {
       console.log(`Server is running on port ${PORT}`);
     });
   })
