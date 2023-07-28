@@ -11,11 +11,7 @@ var indexRouter = require("./routes/index");
 var postRouter = require("./routes/blogPostRoute");
 var profileRoute = require("./routes/profileRoute");
 
-
-
 var app = express();
-
-
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
@@ -27,16 +23,27 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
-const origins = [
+// Define the allowed origins for CORS
+const allowedOrigins = [
   "https://98.246.0.185",
   "https://localhost:3000",
   "https://selinaystore.com",
 ];
 
+// CORS middleware
 app.use(
   cors({
-    origin : "*",
-    credentials: true, 
+    origin: function (origin, callback) {
+      
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
+    allowedHeaders: "content-type",
   })
 );
 
@@ -44,8 +51,6 @@ app.use("/", indexRouter);
 app.use("/auth", authRouter);
 app.use("/posts", postRouter);
 app.use("/profile", profileRoute);
-
-
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
