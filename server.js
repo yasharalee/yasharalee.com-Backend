@@ -1,3 +1,5 @@
+delete require.cache[require.resolve("./app")];
+
 const http = require('http');
 const https = require('https');
 const fs = require('fs');
@@ -5,7 +7,6 @@ const mongoose = require("mongoose");
 const app = require("./app");
 
 const PORT = process.env.PORT || 3001;
-const isProduction = process.env.NODE_ENV === 'production';
 
 // Connect to MongoDB
 mongoose
@@ -21,7 +22,7 @@ mongoose
         key: fs.readFileSync('/etc/letsencrypt/live/lapisel-dev.com/privkey.pem'),
         cert: fs.readFileSync('/etc/letsencrypt/live/lapisel-dev.com/fullchain.pem')
       };
-      https.createServer(httpsOptions, app).listen(PORT, () => {
+    https.createServer(httpsOptions, app).listen(PORT, '127.0.0.1' ,() => {
         console.log(`Server is running on port ${PORT}`);
       });
     
