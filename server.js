@@ -22,7 +22,7 @@ mongoose
         key: fs.readFileSync('/etc/letsencrypt/live/lapisel-dev.com/privkey.pem'),
         cert: fs.readFileSync('/etc/letsencrypt/live/lapisel-dev.com/fullchain.pem')
       };
-    https.createServer(httpsOptions, app).listen(PORT, '127.0.0.1' ,() => {
+    https.createServer(httpsOptions, app).listen(PORT ,() => {
         console.log(`Server is running on port ${PORT}`);
       });
     

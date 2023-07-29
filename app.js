@@ -6,12 +6,15 @@ var logger = require("morgan");
 const cors = require("cors");
 require("dotenv").config();
 
+
 const authRouter = require("./routes/authRoute");
 var indexRouter = require("./routes/index");
 var postRouter = require("./routes/blogPostRoute");
 var profileRoute = require("./routes/profileRoute");
 
 var app = express();
+
+app.set('trust proxy', true);
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
