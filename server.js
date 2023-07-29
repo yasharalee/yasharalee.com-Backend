@@ -35,12 +35,12 @@ mongoose
     //   https.createServer(httpsOptions, app).listen(PORT, () => {
     //     console.log(`Server is running on port ${PORT}`);
     //   });
-     }
-      console.warn("Warning: The server is running in development mode without HTTPS.");
+    console.warn("Warning: The server is running in development mode without HTTPS.");
     // Create HTTP server for local development
     http.createServer(app).listen(PORT, () => {
       console.log(`Server is running on port ${PORT}`);
     });
+     }
   
   })
   .catch((err) => {
