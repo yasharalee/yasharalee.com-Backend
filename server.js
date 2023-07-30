@@ -18,11 +18,11 @@ mongoose
     console.log("Connected to MongoDB");
 
       // Create HTTPS server for production
-      const httpsOptions = {
-        key: fs.readFileSync('/etc/letsencrypt/live/lapisel-dev.com/privkey.pem'),
-        cert: fs.readFileSync('/etc/letsencrypt/live/lapisel-dev.com/fullchain.pem')
-      };
-    https.createServer(httpsOptions, app).listen(PORT ,() => {
+      // const httpsOptions = {
+      //   key: fs.readFileSync('/etc/letsencrypt/live/lapisel-dev.com/privkey.pem'),
+      //   cert: fs.readFileSync('/etc/letsencrypt/live/lapisel-dev.com/fullchain.pem')
+      // };
+    https.createServer(/*httpsOptions,*/ app).listen(PORT ,() => {
         console.log(`Server is running on port ${PORT}`);
       });
     
