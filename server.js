@@ -1,5 +1,3 @@
-delete require.cache[require.resolve("./app")];
-
 const http = require('http');
 const https = require('https');
 const fs = require('fs');
