@@ -41,13 +41,18 @@ app.use(
   })
 );
 
+app.get("/test", (req, res) => {
+  try {
+    res.send({ "hit": true });
+  } catch (err) {
+    console.log('Err', err);
+  }
+})
 app.use("/", indexRouter);
 app.use("/auth", authRouter);
 app.use("/posts", postRouter);
 app.use("/profile", profileRoute);
-app.get("/test", (req, res)=>{
-  res.send({hit : true});
-})
+
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
