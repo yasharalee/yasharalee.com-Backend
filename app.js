@@ -14,7 +14,7 @@ var profileRoute = require("./routes/profileRoute");
 
 var app = express();
 
-app.set('trust proxy', true);
+// app.set('trust proxy', true);
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
