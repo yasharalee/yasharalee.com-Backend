@@ -57,7 +57,7 @@ const makeSureIsOwner = (modelName) => {
         if (foundBlog.author.equals(new mongoose.Types.ObjectId(userId))) {
           next();
         } else {
-          return res.status(403).json({ error: message });
+          return res.status(401).json({ error: message });
         }
       } else if (modelName == "Comment") {
         const foundComment = await comment.findById(resourceIds[0]);
@@ -69,22 +69,29 @@ const makeSureIsOwner = (modelName) => {
         if (foundComment.author.equals(new mongoose.Types.ObjectId(userId))) {
           next();
         } else {
-          return res.status(403).json({ error: message });
+          return res.status(401).json({ error: message });
         }
       } else if (modelName == "Profile") {
-        const foundProfile = await profile.findById(resourceIds[0]);
+        let foundProfile=null;
+
+        if (!resourceIds[0]){
+            next();
+        }else{
+          foundProfile = await profile.findById(resourceIds[0]);
+        }
+
 
         if (!foundProfile) {
           return res.status(404).json({ error: "Not Found" });
         }
 
-        if (foundProfile.owner.equals(new mongoose.Types.ObjectId(userId))) {
+        if (foundProfile.profileOwner.equals(new mongoose.Types.ObjectId(userId))) {
           next();
         } else {
-          return res.status(403).json({ error: message });
+          return res.status(401).json({ error: "Not Authorized" });
         }
       } else {
-        return res.status(403).json({ error: " Not Authorized" });
+        return res.status(401).json({ error: " Not Authorized" });
       }
     } catch (err) {
       console.error(err);

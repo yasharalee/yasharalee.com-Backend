@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const Comment = require("./commentSchema");
 
 const profileSchema = new mongoose.Schema({
-  profileOwner: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+  profileOwner: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   name: {
     type: String,
   },

@@ -5,7 +5,7 @@ const { verifyToken } = require("../utils/JwtUtils");
 const { makeSureIsOwner } = require("../middleware/authorize");
 
 
-router.put("/editProfile", profileActions.editProfile);
+router.put("/editProfile", verifyToken, profileActions.editProfile);
 
 router.get("/getProfileData/:profile", verifyToken, profileActions.getProfileData);
 
