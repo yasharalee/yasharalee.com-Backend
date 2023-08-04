@@ -35,7 +35,7 @@ const allowedOrigins = [
 
 // CORS middleware
 app.use(
-  cors({origin: "*",
+  cors({origin: allowedOrigins,
     credentials: true,
     allowedHeaders: "content-type",
   })
