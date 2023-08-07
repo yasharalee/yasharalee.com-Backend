@@ -16,6 +16,22 @@ var app = express();
 
 // app.set('trust proxy', true);
 
+// Define the allowed origins for CORS
+const allowedOrigins = [
+  "https://98.246.0.185",
+  "https://localhost:3000",
+  "https://lapiselin.com"
+];
+
+// CORS middleware
+app.use(
+  cors({
+    origin: allowedOrigins,
+    credentials: true,
+    allowedHeaders: "content-type",
+  })
+);
+
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "jade");
@@ -26,20 +42,6 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
-// Define the allowed origins for CORS
-const allowedOrigins = [
-  "https://98.246.0.185",
-  "https://localhost:3000",
-  "https://lapiselin.com/"
-];
-
-// CORS middleware
-app.use(
-  cors({origin: allowedOrigins,
-    credentials: true,
-    allowedHeaders: "content-type",
-  })
-);
 
 app.get("/test", (req, res) => {
   try {
