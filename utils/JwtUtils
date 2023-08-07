@@ -63,7 +63,7 @@ const setHttpOnlyCookie = (res, name, value, expiration, Path) => {
     expires: expiration,
     sameSite: "Strict",
     Path,
-    domain: ".lapiselin.com",
+    domain: "https://lapiselin.com",
   };
 
   res.cookie(name, value, options);
