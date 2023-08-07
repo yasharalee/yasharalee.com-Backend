@@ -30,7 +30,7 @@ app.use(express.static(path.join(__dirname, "public")));
 const allowedOrigins = [
   "https://98.246.0.185",
   "https://localhost:3000",
-  "https://selinaystore.com",
+  "https://vermillion-muffin-a5a8ba.netlify.app/"
 ];
 
 // CORS middleware
