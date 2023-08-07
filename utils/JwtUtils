@@ -58,12 +58,13 @@ const verifyToken = (req, res, next) => {
 // Function to generate an HTTP-only cookie
 const setHttpOnlyCookie = (res, name, value, expiration, Path) => {
   const options = {
-    httpOnly: true,
-    secure: true,
-    expires: expiration,
-    sameSite: "Strict",
-    Path,
     domain: "https://lapiselin.com",
+    Path,
+    secure: true,
+    httpOnly: true,
+    sameSite: "Strict",
+    expires: expiration,
+
   };
 
   res.cookie(name, value, options);
