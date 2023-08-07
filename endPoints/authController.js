@@ -68,7 +68,8 @@ const register = async (req, res, next) => {
         res,
         "access-token",
         token,
-        new Date(Date.now() + 1 * 60 * 60 * 1000) // Expires in 1 hour
+        new Date(Date.now() + 1 * 60 * 60 * 1000), // Expires in 1 hour
+        "/auth/register"
       );
 
       res.status(201).json({ isCreated: true });
@@ -81,6 +82,7 @@ const register = async (req, res, next) => {
     res.status(500).json({ error: "Failed to register user" });
   }
 };
+
 
 const login = async (req, res) => {
   try {
@@ -133,7 +135,8 @@ const login = async (req, res) => {
       res,
       "access-token",
       token,
-      new Date(Date.now() + 1 * 60 * 60 * 1000) // Expires in 1 hour
+      new Date(Date.now() + 1 * 60 * 60 * 1000), // Expires in 1 hour
+      "auth/login",
     );
 
     const loginHistory = {
