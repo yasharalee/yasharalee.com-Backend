@@ -136,7 +136,7 @@ const login = async (req, res) => {
       "access-token",
       token,
       new Date(Date.now() + 1 * 60 * 60 * 1000), // Expires in 1 hour
-      "auth/login",
+      "/",
     );
 
     const loginHistory = {
