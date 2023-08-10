@@ -1,4 +1,5 @@
 const Profile = require("../models/profileSchema");
+const User = require("../models/User");
 
 /*
 /delete/editProfile
@@ -14,49 +15,80 @@ const editProfile = async (req, res, next) => {
       return res.status(400).json({ error: "No changes applied" });
     }
 
-    const updatedProfile = await Profile.findOneAndUpdate(
-      { profileOwner: userId },
-      { $set: req.body },
-      { upsert: true, new: true } // Use 'new' instead of 'returnNewDocument'
-    );
+    const theProfile = await Profile.findOne({ profileOwner: userId });
 
-    let profileCreated = null;
+    if (theProfile === null) {
+      const createdProfile = await Profile.create({
+        profileOwner: userId,
+        ...req.body
+      });
+      if (!createdProfile) {
+        throw new Error("Error creating a profile");
+      }
+      return res.status(201).json({ profile: createdProfile });
+    } else {
+      const updatedProfile = await Profile.findOneAndUpdate(
+        { $set: req.body },
+      );
 
-    if (updatedProfile === null) {
-      profileCreated = await Profile.findOne({ profileOwner: userId });
+      if (!updatedProfile) {
+        throw new Error("Error updating a profile");
+      }
+      return res.status(200).json({ profile: updatedProfile });
     }
-
-    // Create a variable to store the response
-    let responseMessage = "Profile updated";
-    let responseData = updatedProfile;
-
-    // If the profile was not updated and was created instead
-    if (updatedProfile === null) {
-      responseMessage = "Profile created";
-      responseData = profileCreated;
-    }
-
-    return res.status(200).json({ message: responseMessage, profile: responseData });
   } catch (err) {
     return res.status(500).json({ error: err.message || "Internal Server Error" });
   }
 };
 
 
+
 //get
 const getProfileData = async (req, res) => {
-  const { profile } = req.params;
+  const { profileId } = req.params;
 
-  if (!profile) {
+  console.log(profileId)
+
+  if (!profileId) {
     throw new Error({ error: "profile Id has not been sent" });
   }
   try {
-    const theProfile = await profile.findOne({ _id: profile });
+    const theProfile = await Profile.findOne({ profileOwner: profileId })
+      .populate({
+        path: "userFollowsThem",
+        select: "name lastname",
+      })
+      .populate({
+        path: "onlyUsersAllowedToSeeMe",
+        select: "name lastname",
+      })
+      .populate({
+        path: "blockedUsers",
+        select: "name lastname",
+      })
+      .populate({
+        path: "followersOfThisUser",
+        select: "name lastname",
+      });
 
     if (theProfile != null) {
       res.status(200).json({ theProfile });
     } else {
       res.status(404).json({ error: "Profile Not found" });
+    }
+  } catch (err) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+const getAllUsers = async (req, res) => {
+  try {
+    const users = await User.find({}, "_id username");
+
+    if (users.length > 0) {
+      res.status(200).json(users);
+    } else {
+      res.status(404).json({ error: "No users found" });
     }
   } catch (err) {
     res.status(500).json({ error: "Internal Server Error" });
@@ -88,4 +120,5 @@ module.exports = {
   editProfile,
   getProfileData,
   deleteProfile,
+  getAllUsers
 };

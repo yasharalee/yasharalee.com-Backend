@@ -6,6 +6,7 @@ const profileSchema = new mongoose.Schema({
   name: {
     type: String,
   },
+  lastname: { type: String },
   dateOfBirth: {
     type: Date,
   },
@@ -20,17 +21,34 @@ const profileSchema = new mongoose.Schema({
   biography: {
     type: String,
   },
-  contactInformation: {
-    phone: {
-      type: String,
-    },
-    address: {
-      type: String,
-    },
-  },
-  socialMediaLinks: {
-    type: mongoose.Schema.Types.Mixed,
-    default: {},
+  contactInformation: [
+    {
+      type: {
+        type: String,
+        enum: ["phone", "address"],
+        required: true,
+      },
+      value: {
+        type: String,
+        required: true,
+      },
+    }
+  ], 
+  socialMediaLinks: [
+    {
+      type: {
+        type: String,
+        enum: ["Twitter", "Instagram", "Facebook", "LinkedIn", "Telegram", "Other"], 
+        required: true,
+      },
+      value: {
+        type: String,
+        required: true,
+      },
+    }
+  ],
+  verificationCode: {
+    type: Number
   },
   isPublic: {
     type: Boolean,

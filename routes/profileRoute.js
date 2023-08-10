@@ -7,7 +7,8 @@ const { makeSureIsOwner } = require("../middleware/authorize");
 
 router.put("/editProfile", verifyToken, profileActions.editProfile);
 
-router.get("/getProfileData/:profile", verifyToken, profileActions.getProfileData);
+router.get("/getProfileData/:profileId", verifyToken, profileActions.getProfileData);
+router.get("/getAllUsers", verifyToken, profileActions.getAllUsers);
 
 router.delete(
   "/deleteProfile",
