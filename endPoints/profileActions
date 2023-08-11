@@ -1,3 +1,4 @@
+const { json } = require("express");
 const Profile = require("../models/profileSchema");
 const User = require("../models/User");
 
@@ -28,7 +29,9 @@ const editProfile = async (req, res, next) => {
       return res.status(201).json({ profile: createdProfile });
     } else {
       const updatedProfile = await Profile.findOneAndUpdate(
+        { profileOwner: userId },
         { $set: req.body },
+        { new: true } 
       );
 
       if (!updatedProfile) {
@@ -47,39 +50,47 @@ const editProfile = async (req, res, next) => {
 const getProfileData = async (req, res) => {
   const { profileId } = req.params;
 
-  console.log(profileId)
+  console.log(profileId);
 
   if (!profileId) {
-    throw new Error({ error: "profile Id has not been sent" });
+    return res.status(400).json({ error: "Profile ID has not been sent" });
   }
-  try {
-    const theProfile = await Profile.findOne({ profileOwner: profileId })
-      .populate({
-        path: "userFollowsThem",
-        select: "name lastname",
-      })
-      .populate({
-        path: "onlyUsersAllowedToSeeMe",
-        select: "name lastname",
-      })
-      .populate({
-        path: "blockedUsers",
-        select: "name lastname",
-      })
-      .populate({
-        path: "followersOfThisUser",
-        select: "name lastname",
-      });
 
-    if (theProfile != null) {
-      res.status(200).json({ theProfile });
-    } else {
-      res.status(404).json({ error: "Profile Not found" });
+  try {
+
+    let theProfile = await Profile.findOne({ profileOwner: profileId }).lean();
+
+    if (!theProfile) {
+      return res.status(404).json({ message: "Profile not found" });
     }
-  } catch (err) {
-    res.status(500).json({ error: "Internal Server Error" });
+
+    // Helper function to find and populate profiles based on profileOwner
+    const populateProfiles = async (ids) => {
+      const profiles = [];
+      for (let id of ids) {
+        const profile = await Profile.findOne({ profileOwner: id }).select('name lastname profileOwner');
+        if (profile) profiles.push(profile);
+      }
+      return profiles;
+    };
+
+    // Populate various arrays
+    theProfile.userFollowsThem = await populateProfiles(theProfile.userFollowsThem);
+    theProfile.onlyUsersAllowedToSeeMe = await populateProfiles(theProfile.onlyUsersAllowedToSeeMe);
+    theProfile.blockedUsers = await populateProfiles(theProfile.blockedUsers);
+    theProfile.favioriteUsers = await populateProfiles(theProfile.favioriteUsers);
+    theProfile.followersOfThisUser = await populateProfiles(theProfile.followersOfThisUser);
+
+   
+
+    res.json({ theProfile });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
+
 
 const getAllUsers = async (req, res) => {
   try {
@@ -104,7 +115,8 @@ const deleteProfile = async (req, res) => {
   }
 
   try {
-    const deletedProfile = await blogPost.findByIdAndDelete({ _id: profile });
+    const deletedProfile = await Profile.findByIdAndDelete({ profileOwner: profile });
+
 
     if (deletedProfile) {
       res.status(200).json({ isDeleted: true });
