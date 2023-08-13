@@ -67,8 +67,8 @@ const register = async (req, res, next) => {
         res,
         "access-token",
         token,
-        new Date(Date.now() + 1 * 60 * 60 * 1000), // Expires in 1 hour
-        "/auth/register"
+        new Date(Date.now() + 1 * 60 * 60 * 1000),
+        "/",
       );
 
       res.status(201).json({ user:findUser });
