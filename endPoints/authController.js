@@ -20,19 +20,19 @@ const register = async (req, res, next) => {
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { email, password, role, username } = req.body;
+    const { email, password, username } = req.body;
     const normalizedEmail = email;
 
-    if (
-      role === "first-admin" ||
-      role === "second-admin" ||
-      role === "third-admin" ||
-      role === "owner"
-    ) {
-      return res
-        .status(403)
-        .json({ error: "Registration is not allowed for " + role + " role" });
-    }
+    // if (
+    //   role === "first-admin" ||
+    //   role === "second-admin" ||
+    //   role === "third-admin" ||
+    //   role === "owner"
+    // ) {
+    //   return res
+    //     .status(403)
+    //     .json({ error: "Registration is not allowed for " + role + " role" });
+    // }
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -59,7 +59,6 @@ const register = async (req, res, next) => {
         userId: findUser._id.toString(),
         userEmail: findUser.normalizedEmail,
         userUsername: findUser.username,
-        role: findUser.role,
       };
 
       const token = jwtUtils.generateToken(payload);
@@ -72,7 +71,7 @@ const register = async (req, res, next) => {
         "/auth/register"
       );
 
-      res.status(201).json({ isCreated: true });
+      res.status(201).json({ user:findUser });
     } catch (err) {
       console.error(err);
       res.status(500).json({ error: "Failed to register user" });
