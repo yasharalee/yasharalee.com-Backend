@@ -11,6 +11,7 @@ const authRouter = require("./routes/authRoute");
 var indexRouter = require("./routes/index");
 var postRouter = require("./routes/blogPostRoute");
 var profileRoute = require("./routes/profileRoute");
+const MessageRouter = require("./routes/yasContactRoute");
 
 var app = express();
 
@@ -19,7 +20,7 @@ var app = express();
 // Define the allowed origins for CORS
 const allowedOrigins = [
   "https://98.246.0.185",
-  "https://localhost:3000",
+  "https://yasharalee.com",
   "https://lapiselin.com"
 ];
 
@@ -54,6 +55,8 @@ app.use("/", indexRouter);
 app.use("/auth", authRouter);
 app.use("/posts", postRouter);
 app.use("/profile", profileRoute);
+app.use("/Contact", MessageRouter);
+
 
 
 
