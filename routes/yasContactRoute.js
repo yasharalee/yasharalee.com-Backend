@@ -11,7 +11,7 @@ router.get("/yasmessage/:id",verifyToken ,authorizeRole("owner"),  ContactAction
 router.post("/createYasPost", verifyToken, authorizeRole("owner"), ContactActions.createYasPost);
 router.get("/getYasPosts", verifyToken, authorizeRole("owner"), ContactActions.getYasPosts);
 router.get("/getYasPost/:id", verifyToken, authorizeRole("owner"), ContactActions.getYasPost);
-router.get("/editYasPost", verifyToken, authorizeRole("owner"), ContactActions.editYasPost);
+router.put("/editYasPost", verifyToken, authorizeRole("owner"), ContactActions.editYasPost);
 router.delete("/deleteYasPost/:id", verifyToken, authorizeRole("owner"), ContactActions.deleteYasPost);
 
 
