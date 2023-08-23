@@ -1,5 +1,6 @@
 const { json } = require("express");
 const Contact = require("../models/yasContact");
+const YasPost = require("../models/yas_back/yasPost");
 
 const createMessage = async (req, res) => {
     try {
@@ -103,7 +104,157 @@ const getMessage = async (req, res) => {
     }
 };
 
+const createYasPost = async (req, res) => {
+    try {
+
+        const { category, title, content } = req.body;
+
+
+        const newPost = new YasPost({
+            category, title, content
+        });
+
+
+        await newPost.save();
+
+        const obj = await YasPost.findOne({ title });
+
+        if (obj) {
+            return res.status(201).json({
+                success: true,
+                post: obj
+            });
+        } else {
+            return res.status(201).json({
+                success: false
+            });
+        }
+
+
+    } catch (err) {
+
+        console.error(err);
+        return res.status(500).json({
+            success: false,
+            message: "An error occurred while creating the Post. Please try again later."
+        });
+    }
+};
+
+
+const getYasPosts = async (req, res) => {
+    try {
+            const posts = await YasPost.find();
+            if(posts){
+               return res.status(200).json({
+                    data: posts
+                });
+            }else {
+                return res.status(404).json({
+                    success : false
+                })
+            }
+        
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({
+            success: false,
+            message: "An error occurred while retrieving the posts. Please try again later."
+        });
+    }
+};
+
+const getYasPost = async (req, res) => {
+    try {
+
+        const id = req.params.id;
+
+        const post = await YasPost.find({_id:id});
+        
+        if (post) {
+            return res.status(200).json({
+                data: post
+            });
+        } else {
+            return res.status(404).json({
+                success: false
+            })
+        }
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({
+            success: false,
+            message: "An error occurred while retrieving the posts. Please try again later."
+        });
+    }
+};
+
+const editYasPost = async (req, res) => {
+    try {
+
+        const { _id, category, title, content } = req.body;
+
+        const updatedValues = { category, title, content };
+
+        const post = await YasPost.findOneAndUpdate({ _id}, updatedValues, { new: true });
+
+
+        if (post) {
+            return res.status(200).json({
+                success:true,
+                post
+            });
+        } else {
+            return res.status(404).json({
+                success: false
+            })
+        }
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({
+            success: false,
+            message: "An error occurred while retrieving the posts. Please try again later."
+        });
+    }
+};
+
+const deleteYasPost = async (req, res) => {
+    try {
+
+        const { id } = req.params;
+
+
+        const post = await YasPost.findByIdAndRemove(id);
+
+
+        if (post) {
+            return res.status(200).json({
+                success: true
+            });
+        } else {
+            return res.status(404).json({
+                success: false
+            })
+        }
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({
+            success: false,
+            message: "An error occurred while retrieving the posts. Please try again later."
+        });
+    }
+};
+
+
 module.exports = {
+    createYasPost,
+    getYasPosts,
+    getYasPost,
+    editYasPost,
+    deleteYasPost,
     createMessage,
     getMessages,
     getMessage
