@@ -2,6 +2,7 @@ const bcrypt = require("bcrypt");
 const passportSetup = require('../utils/passStrategies'); 
 const passport = require('passport');
 const jwtCookie = require("../utils/tokenUtils");
+const mailit = require("../utils/mailerUtil");
 
 const google = (req, res, next) => {
     passport.authenticate('google', {
@@ -18,7 +19,7 @@ const googleCallback = (req, res, next) => {
         if (!user) {
             return res.status(401).json({ message: 'Authentication failed' });
         }
-        // res.cookie('access-token', token, { httpOnly: true });
+        mailit.sendEmail("yasharalee@hotmail.com", "just for testing", "this is a test email");
         jwtCookie.setHttpOnlyCookie(res, "access-token", token, new Date(Date.now() + 1 * 60 * 60 * 1000),"/")
         res.redirect('https://localhost/test'); 
     })(req, res, next);
