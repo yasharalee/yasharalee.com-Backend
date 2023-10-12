@@ -5,6 +5,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const passport = require('passport');
 const cors = require("cors");
+const AWS = require('aws-sdk');
 require("dotenv").config();
 
 const passportSetup = require('./utils/passStrategies');
@@ -28,6 +29,9 @@ app.use(
     allowedHeaders: "content-type",
   })
 );
+
+AWS.config.update({ region: 'us-east-2' });
+const ses = new AWS.SES({ apiVersion: '2010-12-01' });
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
