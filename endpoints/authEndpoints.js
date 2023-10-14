@@ -7,10 +7,14 @@ const mailit = require("../utils/emailUtils");
 
 const google = (req, res, next) => {
     passport.authenticate('google', {
-        scope: ['profile', 'email']
+        scope: ['profile', 'email'],
+        failureRedirect: 'https://yaslanding.com/auth/Gcancelled'
     })(req, res, next);
 };
 
+const googleCanceled = (req, res, next) => {
+    res.redirect('https://yaslanding.com/auth-cancelled');
+};
 
 const googleCallback = (req, res, next) => {
     passport.authenticate('google', async (err, { user, token }) => {
@@ -61,6 +65,7 @@ const outlookCallback = (req, res, next) => {
 
 module.exports = {
     google,
+    googleCanceled,
     googleCallback,
     outlook,
     outlookCallback

@@ -53,6 +53,15 @@ app.get("/test", (req, res) => {
   }
 })
 
+app.get("/auth-cancelled", (req, res) => {
+  try {
+    console.log("Body:", req.body);
+    res.send({ "hit": true });
+  } catch (err) {
+    console.log('Err', err);
+  }
+})
+
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/auth', authRouter);
