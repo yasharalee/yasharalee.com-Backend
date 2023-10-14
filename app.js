@@ -5,7 +5,8 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const passport = require('passport');
 const cors = require("cors");
-const AWS = require('aws-sdk');
+const { SESClient, SendEmailCommand } = require("@aws-sdk/client-ses"); // Importing the AWS SDK v3 packages
+
 require("dotenv").config();
 
 const passportSetup = require('./utils/passStrategies');
@@ -21,7 +22,6 @@ const allowedOrigins = [
   "https://yasharalee.com"
 ];
 
-
 app.use(
   cors({
     origin: allowedOrigins,
@@ -30,8 +30,7 @@ app.use(
   })
 );
 
-AWS.config.update({ region: 'us-east-1' });
-const ses = new AWS.SES({ apiVersion: '2010-12-01' });
+const sesClient = new SESClient({ region: 'us-east-1' });
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -51,7 +50,7 @@ app.get("/test", (req, res) => {
   } catch (err) {
     console.log('Err', err);
   }
-})
+});
 
 app.get("/auth-cancelled", (req, res) => {
   try {
@@ -60,24 +59,24 @@ app.get("/auth-cancelled", (req, res) => {
   } catch (err) {
     console.log('Err', err);
   }
-})
+});
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/auth', authRouter);
 
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
+
+app.use(function (req, res, next) {
   next(createError(404));
 });
 
 // error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
+app.use(function (err, req, res, next) {
+  
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-  // render the error page
+  
   res.status(err.status || 500);
   res.render('error');
 });

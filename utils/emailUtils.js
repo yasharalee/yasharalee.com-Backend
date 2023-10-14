@@ -1,6 +1,8 @@
-const AWS = require('aws-sdk');
+const {
+    SES
+} = require("@aws-sdk/client-ses");
 
-const ses = new AWS.SES({ apiVersion: '2010-12-01' });
+const ses = new SES({ apiVersion: '2010-12-01' });
 
 function sendEmail(recipient, subject, message) {
     const params = {
