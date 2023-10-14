@@ -2,7 +2,8 @@ const {
     SES
 } = require("@aws-sdk/client-ses");
 
-const ses = new SES({ apiVersion: '2010-12-01' });
+const ses = new SES({ region: 'us-east-2', apiVersion: '2010-12-01' });
+
 
 function sendEmail(recipient, subject, message) {
     console.log("email function has fired");
