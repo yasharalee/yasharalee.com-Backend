@@ -28,7 +28,7 @@ const googleCallback = (req, res, next) => {
         const subject = "just for testing";
         const messageBody = "This is the message body in text format.";
         mailit.sendEmail(recipientEmail, subject, messageBody);
-
+        console.log("after mailing in callback function");
 
         jwtCookie.setHttpOnlyCookie(res, "access-token", token, new Date(Date.now() + 1 * 60 * 60 * 1000),"/")
         res.redirect('https://yaslanding.com/test'); 

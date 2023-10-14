@@ -5,6 +5,12 @@ const {
 const ses = new SES({ apiVersion: '2010-12-01' });
 
 function sendEmail(recipient, subject, message) {
+    console.log("email function has fired");
+    console.log("recipient :: " + recipient );
+    console.log('subject:: '+subject);
+    console.log('message:: ' + message);
+
+
     const params = {
         Destination: {
             ToAddresses: [recipient],
@@ -30,6 +36,7 @@ function sendEmail(recipient, subject, message) {
         } else {
             console.log('Email sent successfully:', data);
         }
+        console.log(params);
     });
 }
 

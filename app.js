@@ -17,6 +17,8 @@ var usersRouter = require('./routes/users');
 
 var app = express();
 
+const sesClient = new SESClient({ region: 'us-east-2' });
+
 const allowedOrigins = [
   "https://98.246.0.185",
   "https://yasharalee.com"
@@ -30,7 +32,6 @@ app.use(
   })
 );
 
-const sesClient = new SESClient({ region: 'us-east-2' });
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
