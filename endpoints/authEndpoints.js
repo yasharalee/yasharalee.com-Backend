@@ -27,7 +27,7 @@ const googleCallback = (req, res, next) => {
 
 
         jwtCookie.setHttpOnlyCookie(res, "access-token", token, new Date(Date.now() + 1 * 60 * 60 * 1000),"/")
-        res.redirect('https://yaslanding.com/auth/google'); 
+        res.redirect('https://yaslanding.com/test'); 
     })(req, res, next);
 };
 

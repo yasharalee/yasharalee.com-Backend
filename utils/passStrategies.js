@@ -7,8 +7,7 @@ const jwt = require('jsonwebtoken');
 passport.use(new GoogleStrategy({
     clientID: process.env.GoogleClintID,
     clientSecret: process.env.GoogleClientSecret,
-    callbackURL: 'https://yaslanding.com/auth/google/callback',
-    scope: ['profile', 'email']
+    callbackURL: 'https://yaslanding.com/auth/google/callback'
 }, async (accessToken, refreshToken, profile, done) => {
     let user = await User.findOne({ googleId: profile.id });
     if (!user) {
@@ -28,7 +27,7 @@ passport.use(new GoogleStrategy({
 passport.use(new OutlookStrategy({
     clientID: process.env.OutlookClientID,
     clientSecret: process.env.OutlookSecretValue,
-    callbackURL: 'https://localhost:443/auth/outlook/callback'
+    callbackURL: 'https://yaslanding.com/auth/outlook/callback'
 }, async (accessToken, refreshToken, profile, done) => {
     try {
         let user = await User.findOne({ outlookId: profile.id });
