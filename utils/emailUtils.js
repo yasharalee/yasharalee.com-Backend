@@ -21,7 +21,7 @@ function sendEmail(recipient, subject, message) {
                 Data: subject,
             },
         },
-        Source: 'info@yaslanding.com',
+        Source: 'contact@yasharalee.com',
     };
 
     ses.sendEmail(params, (err, data) => {

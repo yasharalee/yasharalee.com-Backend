@@ -5,7 +5,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const passport = require('passport');
 const cors = require("cors");
-const { SESClient, SendEmailCommand } = require("@aws-sdk/client-ses"); // Importing the AWS SDK v3 packages
+const { SESClient, SendEmailCommand } = require("@aws-sdk/client-ses");
 
 require("dotenv").config();
 
@@ -30,7 +30,7 @@ app.use(
   })
 );
 
-const sesClient = new SESClient({ region: 'us-east-1' });
+const sesClient = new SESClient({ region: 'us-east-2' });
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
