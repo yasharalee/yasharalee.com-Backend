@@ -8,9 +8,9 @@ passport.use(new GoogleStrategy({
     clientID: process.env.GoogleClintID,
     clientSecret: process.env.GoogleClientSecret,
     callbackURL: 'https://yaslanding.com/auth/google/callback'
-}, async (req, accessToken, refreshToken, profile, done) => {
+}, async (accessToken, refreshToken, profile, done) => {
     try {
-        const ipAddress = req.headers['x-forwarded-for'] || req.connection.remoteAddress || null;
+       
         let user = await User.findOne({ googleId: profile.id });
 
         if (!user) {
@@ -20,12 +20,6 @@ passport.use(new GoogleStrategy({
                 originalEmail: profile.emails[0].value,
                 normalizedEmail: profile.emails[0].value.toLowerCase()
             });
-
-            user.loginHistory.push({
-                ipAddress,
-                timestamp: new Date()
-            });
-
             await user.save();
         }
  

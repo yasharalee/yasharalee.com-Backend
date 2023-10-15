@@ -24,6 +24,16 @@ const googleCallback = (req, res, next) => {
         if (!user) {
             return res.status(401).json({ message: 'Authentication failed' });
         }
+
+        const ipAddress = req.headers['x-forwarded-for'] || req.connection.remoteAddress || null;
+
+        user.loginHistory.push({
+            ipAddress,
+            timestamp: new Date()
+        });
+
+        await user.save();
+
         console.log(token);
         const recipientEmail = user.normalizedEmail;
         const subject = "Signed in";
