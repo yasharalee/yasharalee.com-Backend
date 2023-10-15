@@ -73,11 +73,17 @@ const outlookCallback = (req, res, next) => {
     })(req, res, next);
 };
 
+const getUserData = (req, res) => {
+    res.status(200);
+    res.json(req.user);
+}
+
 
 module.exports = {
     google,
     googleCanceled,
     googleCallback,
     outlook,
-    outlookCallback
+    outlookCallback,
+    getUserData
 };
