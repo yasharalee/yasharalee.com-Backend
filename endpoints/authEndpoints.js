@@ -42,7 +42,7 @@ const googleCallback = (req, res, next) => {
         console.log(messageBody);
 
         jwtCookie.setHttpOnlyCookie(res, "access-token", token, new Date(Date.now() + 1 * 60 * 60 * 1000),"/")
-        res.redirect('http://localhost:3000/contact'); 
+        res.redirect('http://localhost:3000/contact?googleAuthSuccess=true');
     })(req, res, next);
 };
 
