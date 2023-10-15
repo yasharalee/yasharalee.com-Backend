@@ -10,7 +10,7 @@ passport.use(new GoogleStrategy({
     callbackURL: 'https://yaslanding.com/auth/google/callback'
 }, async (req, accessToken, refreshToken, profile, done) => {
     try {
-        const ipAddress = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+        const ipAddress = req.headers['x-forwarded-for'] || req.connection.remoteAddress || null;
         let user = await User.findOne({ googleId: profile.id });
 
         if (!user) {
@@ -20,17 +20,20 @@ passport.use(new GoogleStrategy({
                 originalEmail: profile.emails[0].value,
                 normalizedEmail: profile.emails[0].value.toLowerCase()
             });
-        }
-        user.loginHistory.push({
-            ipAddress,
-            timestamp: new Date()
-        });
 
-        await user.save();
+            user.loginHistory.push({
+                ipAddress,
+                timestamp: new Date()
+            });
+
+            await user.save();
+        }
+ 
 
         const token = jwt.sign({ userId: user._id, fullName: user.fullName }, process.env.JWT_SECRET);
         done(null, { user, token });
     } catch (error) {
+        console.log("Error", error);
         done(error);
     }
 }));
