@@ -24,9 +24,10 @@ const googleCallback = (req, res, next) => {
         if (!user) {
             return res.status(401).json({ message: 'Authentication failed' });
         }
-        const recipientEmail = "yasharalee@hotmail.com";
-        const subject = "just for testing";
-        const messageBody = "This is the message body in text format.";
+        console.log(token);
+        const recipientEmail = user.normalizedEmail;
+        const subject = "Signed in";
+        const messageBody = `Dear ${user.fullName} \n This Email has been sent to let you know that your account has been logged in.\n https://yasharalee.com \n IP: ${user.loginHistory[user.loginHistory.length-1].createdAt}`;
         mailit.sendEmail(recipientEmail, subject, messageBody);
         console.log("after mailing in callback function");
 
