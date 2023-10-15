@@ -25,7 +25,7 @@ const googleCallback = (req, res, next) => {
             return res.status(401).json({ message: 'Authentication failed' });
         }
 
-        const ipAddress = req.headers['x-forwarded-for'] || req.connection.remoteAddress || null;
+        const ipAddress = req.connection.remoteAddress || null;
 
         user.loginHistory.push({
             ipAddress,
@@ -40,7 +40,8 @@ const googleCallback = (req, res, next) => {
         // mailit.sendEmail(recipientEmail, subject, messageBody);
 
         jwtCookie.setHttpOnlyCookie(res, "access-token", token, new Date(Date.now() + 1 * 60 * 60 * 1000),"/")
-        res.redirect('https://localhost:3000/contact');
+        res.json(user);
+       // res.redirect('https://localhost:3000/contact');
     })(req, res, next);
 };
 
