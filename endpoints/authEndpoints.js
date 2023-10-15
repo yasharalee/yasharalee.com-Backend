@@ -26,7 +26,6 @@ const googleCallback = (req, res, next) => {
         }
 
         const ipAddress = req.headers['x-forwarded-for'] || req.connection.remoteAddress || null;
-        ipAddress = ipAddress + "".replace("::ffff:","");
 
         user.loginHistory.push({
             ipAddress,
