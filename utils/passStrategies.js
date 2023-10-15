@@ -20,11 +20,11 @@ passport.use(new GoogleStrategy({
                 originalEmail: profile.emails[0].value,
                 normalizedEmail: profile.emails[0].value.toLowerCase()
             });
-            await user.save();
+           user = await user.save();
         }
  
 
-        const token = jwt.sign({ userId: user._id, fullName: user.fullName }, process.env.JWT_SECRET);
+        const token = jwt.sign({ userId: user._id, fullName: user.fullName, role: user.role }, process.env.JWT_SECRET);
         done(null, { user, token });
     } catch (error) {
         console.log("Error", error);

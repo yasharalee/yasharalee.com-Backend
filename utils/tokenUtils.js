@@ -25,6 +25,8 @@ const setHttpOnlyCookie = (res, name, value, expiration, Path) => {
     res.cookie(name, value, options);
 }
 
+
+
 module.exports = {
     generateToken,
     setHttpOnlyCookie,

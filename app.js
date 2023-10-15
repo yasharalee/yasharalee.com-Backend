@@ -7,6 +7,8 @@ const passport = require('passport');
 const cors = require("cors");
 const { SESClient, SendEmailCommand } = require("@aws-sdk/client-ses");
 
+const PostContact = require("./routes/PostContactRoutes");
+
 require("dotenv").config();
 
 const passportSetup = require('./utils/passStrategies');
@@ -66,6 +68,7 @@ app.get("/auth-cancelled", (req, res) => {
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/auth', authRouter);
+app.use('/PostContact', PostContact);
 
 
 app.use(function (req, res, next) {
