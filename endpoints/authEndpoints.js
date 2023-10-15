@@ -34,15 +34,13 @@ const googleCallback = (req, res, next) => {
 
         await user.save();
 
-        console.log(token);
-        const recipientEmail =  user.normalizedEmail;
-        const subject = "Signed in";
-        const messageBody = `Dear ${user.fullName} \n This Email has been sent to let you know that your account has been logged in.\n https://yasharalee.com \n IP: ${user.loginHistory[user.loginHistory.length - 1].ipAddress} \n At: ${user.loginHistory[user.loginHistory.length - 1].timestamp}`;
-        mailit.sendEmail(recipientEmail, subject, messageBody);
-        console.log(messageBody);
+        // const recipientEmail =  user.normalizedEmail;
+        // const subject = "Signed in";
+        // const messageBody = `Dear ${user.fullName} \n This Email has been sent to let you know that your account has been logged in.\n\n https://yasharalee.com \n\n IP: ${user.loginHistory[user.loginHistory.length - 1].ipAddress} \n At: ${user.loginHistory[user.loginHistory.length - 1].timestamp}`;
+        // mailit.sendEmail(recipientEmail, subject, messageBody);
 
         jwtCookie.setHttpOnlyCookie(res, "access-token", token, new Date(Date.now() + 1 * 60 * 60 * 1000),"/")
-        res.redirect('http://localhost:3000/contact');
+        res.redirect('https://localhost:3000/contact');
     })(req, res, next);
 };
 
@@ -74,8 +72,12 @@ const outlookCallback = (req, res, next) => {
 };
 
 const getUserData = (req, res) => {
-    res.status(200);
-    res.json(req.user);
+   try{
+       res.status(200);
+       return res.json(req.user);
+   }catch(err){
+    console.error(err);
+   }
 }
 
 
