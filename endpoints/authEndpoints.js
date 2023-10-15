@@ -40,7 +40,7 @@ const googleCallback = (req, res, next) => {
         // mailit.sendEmail(recipientEmail, subject, messageBody);
 
         jwtCookie.setHttpOnlyCookie(res, "access-token", token, new Date(Date.now() + 1 * 60 * 60 * 1000),"/")
-        res.redirect('http://localhost:3000/contact');
+        res.redirect('https://localhost:3000/contact');
     })(req, res, next);
 };
 
