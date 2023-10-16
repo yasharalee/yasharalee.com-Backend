@@ -15,9 +15,9 @@ const setHttpOnlyCookie = (res, name, value, expiration, Path) => {
     const options = {
 
         Path,
-        secure: false,
+        secure: true,
         httpOnly: true,
-        sameSite: "None",
+        sameSite: "Default",
         expires: expiration,
 
     };
