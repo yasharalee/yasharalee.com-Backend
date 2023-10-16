@@ -41,7 +41,7 @@ const googleCallback = (req, res, next) => {
 
         jwtCookie.setHttpOnlyCookie(res, "access-token", token, new Date(Date.now() + 1 * 60 * 60 * 1000), "/", "yasalee-qa.com")
 
-        res.redirect('https://yaslanding-qa.netlify.app/contact');
+        res.redirect('https://yasalee-qa.com/contact');
     })(req, res, next);
 };
 
