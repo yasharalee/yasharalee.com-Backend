@@ -11,7 +11,7 @@ const generateToken = (payload) => {
 
 
 
-const setHttpOnlyCookie = (res, name, value, expiration, Path) => {
+const setHttpOnlyCookie = (res, name, value, expiration, Path, domain) => {
     const options = {
 
         Path,
@@ -19,6 +19,7 @@ const setHttpOnlyCookie = (res, name, value, expiration, Path) => {
         httpOnly: true,
         sameSite: "None",
         expires: expiration,
+        domain
 
     };
 
