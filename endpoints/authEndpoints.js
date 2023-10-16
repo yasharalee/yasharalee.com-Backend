@@ -41,7 +41,7 @@ const googleCallback = (req, res, next) => {
 
         jwtCookie.setHttpOnlyCookie(res, "access-token", token, new Date(Date.now() + 1 * 60 * 60 * 1000), "/")
 
-        res.redirect('https://localhost:3000/contact');
+        res.redirect('https://yaslanding-qa.netlify.app/contact');
     })(req, res, next);
 };
 
