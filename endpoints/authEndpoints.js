@@ -1,5 +1,5 @@
 const bcrypt = require("bcrypt");
-const passportSetup = require('../utils/passStrategies'); 
+const passportSetup = require('../utils/passStrategies');
 const passport = require('passport');
 const jwtCookie = require("../utils/tokenUtils");
 const mailit = require("../utils/emailUtils");
@@ -39,9 +39,9 @@ const googleCallback = (req, res, next) => {
         // const messageBody = `Dear ${user.fullName} \n This Email has been sent to let you know that your account has been logged in.\n\n https://yasharalee.com \n\n IP: ${user.loginHistory[user.loginHistory.length - 1].ipAddress} \n At: ${user.loginHistory[user.loginHistory.length - 1].timestamp}`;
         // mailit.sendEmail(recipientEmail, subject, messageBody);
 
-        jwtCookie.setHttpOnlyCookie(res, "access-token", token, new Date(Date.now() + 1 * 60 * 60 * 1000),"/")
-       
-       res.redirect('https://localhost:3000/contact');
+        jwtCookie.setHttpOnlyCookie(res, "access-token", token, new Date(Date.now() + 1 * 60 * 60 * 1000), "/")
+
+        res.redirect('https://localhost:3000/contact');
     })(req, res, next);
 };
 
@@ -66,19 +66,19 @@ const outlookCallback = (req, res, next) => {
         if (!user) {
             return res.status(401).json({ message: 'Authentication failed' });
         }
-       
+
         jwtCookie.setHttpOnlyCookie(res, "access-token", token, new Date(Date.now() + 1 * 60 * 60 * 1000), "/")
         res.redirect('https://localhost:443/test');
     })(req, res, next);
 };
 
 const getUserData = (req, res) => {
-   try{
-       res.status(200);
-       return res.json(req.user);
-   }catch(err){
-    console.error(err);
-   }
+    try {
+        res.status(200);
+        return res.json(req.user);
+    } catch (err) {
+        console.error(err);
+    }
 }
 
 
