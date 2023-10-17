@@ -92,5 +92,4 @@ module.exports = {
     outlook,
     outlookCallback,
     getUserData,
-    setCookie
 };
