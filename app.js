@@ -58,6 +58,23 @@ app.get("/test", (req, res) => {
   }
 });
 
+app.get('/set-cookie', (req, res) => {
+  res.send(`
+        <html>
+        <head>
+            <script>
+                setTimeout(() => {
+                    window.location.href = 'https://yasalee-qa.com/contact';
+                }, 2000);
+            </script>
+        </head>
+        <body>
+            Redirecting you...
+        </body>
+        </html>
+    `);
+});
+
 app.get("/auth-cancelled", (req, res) => {
   try {
     console.log("Body:", req.body);

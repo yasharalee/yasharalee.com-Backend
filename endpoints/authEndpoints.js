@@ -16,6 +16,10 @@ const googleCanceled = (req, res, next) => {
     res.redirect('https://yaslanding.com/auth-cancelled');
 };
 
+const setCookie = (req, res, next) => {
+    res.redirect('https://yaslanding.com/auth-cancelled');
+};
+
 const googleCallback = (req, res, next) => {
     passport.authenticate('google', async (err, { user, token }) => {
         if (err) {
@@ -40,10 +44,9 @@ const googleCallback = (req, res, next) => {
         // mailit.sendEmail(recipientEmail, subject, messageBody);
 
         jwtCookie.setHttpOnlyCookie(res, "access-token", token, new Date(Date.now() + 1 * 60 * 60 * 1000), "/")
-        
-        // res.json({ token });
 
-       res.redirect('https://yasalee-qa.com/contact');
+        res.redirect('/set-cookie');
+
     })(req, res, next);
 };
 
@@ -90,5 +93,6 @@ module.exports = {
     googleCallback,
     outlook,
     outlookCallback,
-    getUserData
+    getUserData,
+    setCookie
 };
