@@ -41,9 +41,9 @@ const googleCallback = (req, res, next) => {
 
         // jwtCookie.setHttpOnlyCookie(res, "access-token", token, new Date(Date.now() + 1 * 60 * 60 * 1000), "/", "yasalee-qa.com")
 
-        res.json({ token });
+        // res.json({ token });
 
-       // res.redirect('https://yasalee-qa.com/contact');
+       res.redirect('https://yasalee-qa.com/contact?'+token);
     })(req, res, next);
 };
 
