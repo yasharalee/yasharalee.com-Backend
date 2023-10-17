@@ -16,9 +16,6 @@ const googleCanceled = (req, res, next) => {
     res.redirect('https://yaslanding.com/auth-cancelled');
 };
 
-const setCookie = (req, res, next) => {
-    res.redirect('https://yaslanding.com/auth-cancelled');
-};
 
 const googleCallback = (req, res, next) => {
     passport.authenticate('google', async (err, { user, token }) => {
@@ -43,9 +40,10 @@ const googleCallback = (req, res, next) => {
         // const messageBody = `Dear ${user.fullName} \n This Email has been sent to let you know that your account has been logged in.\n\n https://yasharalee.com \n\n IP: ${user.loginHistory[user.loginHistory.length - 1].ipAddress} \n At: ${user.loginHistory[user.loginHistory.length - 1].timestamp}`;
         // mailit.sendEmail(recipientEmail, subject, messageBody);
 
-        jwtCookie.setHttpOnlyCookie(res, "access-token", token, new Date(Date.now() + 1 * 60 * 60 * 1000), "/")
+       
 
-        res.redirect('/set-cookie');
+        res.redirect('/setCookie/' + token);
+
 
     })(req, res, next);
 };

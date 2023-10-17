@@ -10,7 +10,6 @@ router.get("/outlook", authEndpoints.outlook);
 router.get('/outlook/callback', authEndpoints.outlookCallback);
 
 router.get('/getUserData', verifyToken, authEndpoints.getUserData);
-router.get('/setCookie', verifyToken, authEndpoints.setCookie);
 
 
 module.exports = router;

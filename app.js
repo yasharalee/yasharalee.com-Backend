@@ -58,7 +58,9 @@ app.get("/test", (req, res) => {
   }
 });
 
-app.get('/set-cookie', (req, res) => {
+app.get('/set-cookie:token', (req, res) => {
+  const tokenFromPathParam = req.params.token;
+  jwtCookie.setHttpOnlyCookie(res, "access-token", tokenFromPathParam, new Date(Date.now() + 1 * 60 * 60 * 1000), "/")
   res.send(`
         <html>
         <head>
