@@ -39,9 +39,11 @@ const googleCallback = (req, res, next) => {
         // const messageBody = `Dear ${user.fullName} \n This Email has been sent to let you know that your account has been logged in.\n\n https://yasharalee.com \n\n IP: ${user.loginHistory[user.loginHistory.length - 1].ipAddress} \n At: ${user.loginHistory[user.loginHistory.length - 1].timestamp}`;
         // mailit.sendEmail(recipientEmail, subject, messageBody);
 
-        jwtCookie.setHttpOnlyCookie(res, "access-token", token, new Date(Date.now() + 1 * 60 * 60 * 1000), "/", "yasalee-qa.com")
+        // jwtCookie.setHttpOnlyCookie(res, "access-token", token, new Date(Date.now() + 1 * 60 * 60 * 1000), "/", "yasalee-qa.com")
 
-        res.redirect('https://yasalee-qa.com/contact');
+        res.json({ token });
+
+       // res.redirect('https://yasalee-qa.com/contact');
     })(req, res, next);
 };
 
