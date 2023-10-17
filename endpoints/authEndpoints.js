@@ -43,7 +43,7 @@ const googleCallback = (req, res, next) => {
 
         // res.json({ token });
 
-       res.redirect('https://yasalee-qa.com/contact?token='+token);
+       res.json({ token ,url:'https://yasalee-qa.com/contact'});
     })(req, res, next);
 };
 
