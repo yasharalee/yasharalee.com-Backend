@@ -39,29 +39,28 @@ app.use(
 );
 
 
-
-app.use((req, res, next) => {
-  
+app.use(async (req, res, next) => {
   const clientIp = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-  const visitCount = RequestIp.findOne({ IpAddress: clientIp }, select("Count"));
-  let ipCounts = { clientIp: visitCount || 0 };
-  
-  if (ipCounts[clientIp]) {
-    ipCounts[clientIp]++;
-  } else {
-    ipCounts[clientIp] = 1;
-  }
-  try{
-    const Requester = new RequestIp({ IpAddress: clientIp, Count: clientIp });
-    Requester.save()
 
-  }catch(err){
+  try {
+    let visitCount = await RequestIp.findOne({ IpAddress: clientIp }).select('Count');
+
+    if (visitCount) {
+      visitCount.Count++;
+      await visitCount.save();
+    } else {
+      visitCount = new RequestIp({ IpAddress: clientIp, Count: 1 });
+      await visitCount.save();
+    }
+
+    console.log(`IP: ${clientIp} | Visits: ${visitCount.Count}`);
+  } catch (err) {
     console.error(err);
   }
 
-
   next();
 });
+
 
 
 // view engine setup
