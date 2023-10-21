@@ -1,26 +1,25 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
-const { path } = require("../app");
 
 
 
 const generateToken = (payload) => {
     return jwt.sign({ payload }, process.env.JWT_SECRET, {
-        expiresIn: "2h",
+        expiresIn: "3h",
     });
 };
 
 
 
-const setHttpOnlyCookie = (res, name, value, expiration, path) => {
+const setHttpOnlyCookie = (res, name, value, expiration, Path) => {
     const options = {
 
+        Path,
+        secure: true,
         httpOnly: true,
+        sameSite: "None",
         expires: expiration,
         domain: '.yasalee-qa.com',
-        Path: path,
-        sameSite: 'none',
-        secure: true
 
     };
 
