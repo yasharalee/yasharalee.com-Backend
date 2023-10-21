@@ -42,7 +42,7 @@ const googleCallback = (req, res, next) => {
 
         jwtCookie.setHttpOnlyCookie(res, "access-token", token ,new Date(Date.now() + 2 * 60 * 60 * 1000), "/");
 
-        res.redirect('/contact');
+        res.redirect('https://yasalee-qa.com/contact');
 
 
     })(req, res, next);
