@@ -9,6 +9,7 @@ const verifyToken = (req, res, next) => {
     console.log("token from cookie:: "+ tokenFromCookie);
     const token = tokenFromCookie || tokenFromHeader;
 
+    console.log(req.headers);
     console.log("Bearer token in veryfyToken is:: " + req.headers && req.headers['Authorization']);
     console.log("token in verifyToken is:: " + token);
 
