@@ -1,11 +1,12 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
+const { path } = require("../app");
 
 
 
 const generateToken = (payload) => {
     return jwt.sign({ payload }, process.env.JWT_SECRET, {
-        expiresIn: "3h",
+        expiresIn: "2h",
     });
 };
 
@@ -14,11 +15,12 @@ const generateToken = (payload) => {
 const setHttpOnlyCookie = (res, name, value, expiration, Path) => {
     const options = {
 
-        Path,
-        secure: true,
         httpOnly: true,
-        sameSite: "None",
-        expires: expiration
+        expires: expiration,
+        domain: '.yasalee-qa.com',
+        Path,
+        sameSite: 'none',
+        secure: true
 
     };
 
