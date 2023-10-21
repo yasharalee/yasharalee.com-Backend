@@ -35,6 +35,7 @@ app.use(
     origin: allowedOrigins,
     credentials: true,
     allowedHeaders: "content-type",
+    allowedHeaders: ["content-type", "Authorization"]
   })
 );
 
