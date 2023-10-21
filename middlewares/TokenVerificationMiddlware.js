@@ -3,10 +3,16 @@ const User = require("../models/User");
 
 const verifyToken = (req, res, next) => {
 
-    const token = req.cookies["access-token"] || req.headers['Authorization'].split(' ')[1] ;
-    console.log("token in verifyToken is:: "+token);
+    const tokenFromCookie = req.cookies ? req.cookies["access-token"] : null;
+    const tokenFromHeader = req.headers && req.headers['Authorization'] ? req.headers['Authorization'].split(' ')[1] : null;
+    console.log("token from header:: "+ tokenFromHeader);
+    console.log("token from cookie:: "+ tokenFromCookie);
+    const token = tokenFromCookie || tokenFromHeader;
+
+    console.log("token in verifyToken is:: " + token);
+
     if (!token) {
-        return res.status(401).json({ error: "Unauthorized" });
+        return res.status(401).json({ error: "Unauthorized or no token" });
     }
 
     jwt.verify(token, process.env.JWT_SECRET, async (err, decodedToken) => {
