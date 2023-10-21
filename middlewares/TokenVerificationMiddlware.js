@@ -3,15 +3,14 @@ const User = require("../models/User");
 
 const verifyToken = (req, res, next) => {
 
-    const token = req.cookies["access-token"] || req.headers['Authorization'].split(' ')[1] ;
-    console.log(token)
+    const token = req.cookies["access-token"] || req.headers['authorization'].split(' ')[1] ;
     if (!token) {
         return res.status(401).json({ error: "Unauthorized" });
     }
 
     jwt.verify(token, process.env.JWT_SECRET, async (err, decodedToken) => {
         if (err) {
-            return res.status(401).json({ error: "Invalid token" });
+            return res.status(401).json({ error: "Invalid token", err });
         }
 
         try {
