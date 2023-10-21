@@ -6,6 +6,7 @@ var logger = require('morgan');
 const passport = require('passport');
 const cors = require("cors");
 const { SESClient, SendEmailCommand } = require("@aws-sdk/client-ses");
+const RequestIp = require("./models/RequesterIPSchema");
 
 const PostContact = require("./routes/PostContactRoutes");
 
@@ -36,6 +37,31 @@ app.use(
     allowedHeaders: "content-type",
   })
 );
+
+
+
+app.use((req, res, next) => {
+  
+  const clientIp = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+  const visitCount = RequestIp.findOne({ IpAddress: clientIp }, select(Count));
+  let ipCounts = { clientIp: visitCount || 0 };
+  
+  if (ipCounts[clientIp]) {
+    ipCounts[clientIp]++;
+  } else {
+    ipCounts[clientIp] = 1;
+  }
+  try{
+    const Requester = new RequestIp({ IpAddress: clientIp, Count: clientIp });
+    Requester.save()
+
+  }catch(err){
+    console.error(err);
+  }
+
+
+  next();
+});
 
 
 // view engine setup
