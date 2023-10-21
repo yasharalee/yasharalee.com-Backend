@@ -12,13 +12,13 @@ const generateToken = (payload) => {
 
 
 
-const setHttpOnlyCookie = (res, name, value, expiration, Path) => {
+const setHttpOnlyCookie = (res, name, value, expiration, path) => {
     const options = {
 
         httpOnly: true,
         expires: expiration,
         domain: '.yasalee-qa.com',
-        Path,
+        Path: path,
         sameSite: 'none',
         secure: true
 
