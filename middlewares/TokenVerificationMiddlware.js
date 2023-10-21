@@ -3,7 +3,8 @@ const User = require("../models/User");
 
 const verifyToken = (req, res, next) => {
 
-    const token = req.cookies["access-token"] || req.headers['authorization'].split(' ')[1] ;
+    const token = req.cookies["access-token"] || req.headers['Authorization'].split(' ')[1] ;
+    console.log("token in verifyToken is:: "+token);
     if (!token) {
         return res.status(401).json({ error: "Unauthorized" });
     }
@@ -14,7 +15,7 @@ const verifyToken = (req, res, next) => {
         }
 
         try {
-            const { userId } = decodedToken;
+            const { userId } = decodedToken.payload;
 
             const user = await User.findById(userId);
 
