@@ -17,6 +17,7 @@ const authRouter = require("./routes/authRouter");
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+const { verifyToken } = require('./middlewares/TokenVerificationMiddlware');
 
 var app = express();
 
@@ -34,7 +35,7 @@ app.use(
   cors({
     origin: allowedOrigins,
     credentials: true,
-    allowedHeaders: ["content-type", "Authorization"]
+    allowedHeaders: ["content-type", "authorization"]
   })
 );
 
@@ -74,10 +75,17 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.get("/test", (req, res) => {
+app.get("/test", verifyToken, (req, res) => {
   try {
-    console.log("Body:", req.body);
-    res.send({ "hit": true });
+
+    if (req.user){
+
+      console.log("Body:", req.body);
+      res.send({ "hit": true });
+    }else {
+      res.json({err: "token not found"});
+    }
+
   } catch (err) {
     console.log('Err', err);
   }
