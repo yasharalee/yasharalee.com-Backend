@@ -83,25 +83,6 @@ app.get("/test", (req, res) => {
   }
 });
 
-app.get('/set-cookie:token', (req, res) => {
-  const tokenFromPathParam = req.params.token;
-  jwtCookie.setHttpOnlyCookie(res, "access-token", tokenFromPathParam, new Date(Date.now() + 1 * 60 * 60 * 1000), "/")
-  res.send(`
-        <html>
-        <head>
-            <script>
-                setTimeout(() => {
-                    window.location.href = 'https://yasalee-qa.com/contact';
-                }, 2000);
-            </script>
-        </head>
-        <body>
-            Redirecting you...
-        </body>
-        </html>
-    `);
-});
-
 app.get("/auth-cancelled", (req, res) => {
   try {
     console.log("Body:", req.body);
