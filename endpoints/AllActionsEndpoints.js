@@ -6,7 +6,7 @@ const createMessage = async (req, res) => {
     try {
 
         if (req.user){
-            
+            console.log("request in createMessage is:: " + req);
             const user = req.user;
 
             const newMessage = {
