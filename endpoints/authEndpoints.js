@@ -86,14 +86,14 @@ const getUserData = (req, res) => {
 const gooleLogOut = (req, res) => {
     try {
         const httpOnlyOptions = {
-            Path:"/",
+            path:"/",
             secure: true,
             httpOnly: true,
             sameSite: "None",
-            expires: new Date.now(0),
+            expires: new Date(0),
 
         };
-        console.log("cookie is:: " + httpOnlyOptions);
+        console.log("cookie is:: ", httpOnlyOptions);
 
         res.clearCookie('access-token', httpOnlyOptions);
 
