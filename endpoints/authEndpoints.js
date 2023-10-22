@@ -76,7 +76,7 @@ const outlookCallback = (req, res, next) => {
 const getUserData = (req, res) => {
     try {
         res.status(200);
-        const token = jwtCookie.generateToken({ userId: req.user._id });
+        const token = jwtCookie.generateToken({ userId: req.user._id , fullName: req.user.fullName, role: req.user.role });
         jwtCookie.setHttpOnlyCookie(res, "access-token", token, new Date(Date.now() + 2 * 60 * 60 * 1000), "/");
         return res.json({user: req.user});
     } catch (err) {
