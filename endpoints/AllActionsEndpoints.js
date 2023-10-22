@@ -1,31 +1,55 @@
 const Contact = require("../models/ContactSchema");
+const User = require("../models/User");
 const Post = require("../models/postSchema");
 
 const createMessage = async (req, res) => {
     try {
 
-        const { fullName, companyName, email, phoneNumber, links, preferredContactMethods, message } = req.body;
+        if (req.user){
+            
+            const user = req.user;
 
-        const newContact = new Contact({
-            fullName,
-            companyName,
-            email,
-            phoneNumber,
-            links,
-            preferredContactMethods,
-            message
-        });
+            const newMessage = {
+                fullName: req.fullName,
+                companyName: req.companyName,
+                email: req.email,
+                phoneNumber: req.phoneNumber,
+                links: req.links,
+                preferredContactMethods: req.preferredContactMethods,
+                message: req.message
+            }
 
-        const obj = await newContact.save();
+            user.messageingThread.push(newMessage);
 
-        if (obj) {
-            return res.status(201).json({
-                success: true
+            await user.save();
+
+            res.json({ success: true, newMessage });
+
+        }else {
+            const { fullName, companyName, email, phoneNumber, links, preferredContactMethods, message } = req.body;
+
+            const newContact = new Contact({
+                fullName,
+                companyName,
+                email,
+                phoneNumber,
+                links,
+                preferredContactMethods,
+                message
             });
-        } else {
-            return res.status(500).json({
-                success: false
-            });
+
+            const theMessage = await newContact.save();
+
+            if (theMessage) {
+                return res.status(201).json({
+                    success: true,
+                    newMessage: newContact
+                });
+            } else {
+                return res.status(500).json({
+                    success: false
+                });
+            }
         }
 
     } catch (err) {

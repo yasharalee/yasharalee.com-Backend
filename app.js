@@ -99,7 +99,7 @@ app.get("/auth-cancelled", (req, res) => {
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/auth', authRouter);
-app.use('/PostContact', PostContact);
+app.use('/Messages', PostContact);
 
 
 app.use(function (req, res, next) {

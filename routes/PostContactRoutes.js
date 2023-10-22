@@ -4,7 +4,7 @@ const ContactActions = require('../endpoints/AllActionsEndpoints');
 const { authorizeRole } = require("../middlewares/Authorize");
 const { verifyToken } = require("../middlewares/TokenVerificationMiddlware");
 
-router.post("/createMessage", ContactActions.createMessage);
+router.post("/createMessage", verifyToken ,ContactActions.createMessage);
 router.get("/getMessages", verifyToken, ContactActions.getMessages);
 router.get("/getMessage/:id", verifyToken, ContactActions.getMessage);
 

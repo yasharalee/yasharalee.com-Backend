@@ -23,7 +23,7 @@ const verifyToken = (req, res, next) => {
         }
 
         try {
-            const { userId } = decodedToken;
+            const userId = decodedToken.userId || decodedToken.payload.userId;
 
             console.log("UserId in verifyToken is:: " + userId);
 
