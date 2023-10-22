@@ -93,11 +93,13 @@ const gooleLogOut = (req, res) => {
             expires: new Date.now(0),
 
         };
+        console.log("cookie is:: " + httpOnlyOptions);
 
         res.clearCookie('access-token', httpOnlyOptions);
 
         return res.status(200).json({ message: 'Logged out successfully' });
     } catch (err) {
+        console.log( "error in logout is:: " + err)
         return res.status(500).json({ err });
     }
 }
