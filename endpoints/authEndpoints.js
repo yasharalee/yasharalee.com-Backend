@@ -86,9 +86,11 @@ const getUserData = (req, res) => {
 const gooleLogOut = (req, res) => {
     try {
         const httpOnlyOptions = {
+            Path:"/",
             secure: true,
             httpOnly: true,
             sameSite: "None",
+            expires: new Date.now(0),
 
         };
 
