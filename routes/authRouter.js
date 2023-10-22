@@ -6,6 +6,8 @@ const { verifyToken } = require("../middlewares/TokenVerificationMiddlware");
 router.get("/google", authEndpoints.google);
 router.get('/google/callback', authEndpoints.googleCallback);
 router.get('/google/Canceled', authEndpoints.googleCanceled);
+router.get('/google/gooleLogOut', authEndpoints.gooleLogOut);
+
 router.get("/outlook", authEndpoints.outlook);
 router.get('/outlook/callback', authEndpoints.outlookCallback);
 

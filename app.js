@@ -3,18 +3,14 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-const passport = require('passport');
 const cors = require("cors");
+require("dotenv").config();
+const passportSetup = require('./utils/passStrategies');
+const passport = require('passport');
 const { SESClient, SendEmailCommand } = require("@aws-sdk/client-ses");
 const RequestIp = require("./models/RequesterIPSchema");
-
 const PostContact = require("./routes/PostContactRoutes");
-
-require("dotenv").config();
-
-const passportSetup = require('./utils/passStrategies');
 const authRouter = require("./routes/authRouter");
-
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 const { verifyToken } = require('./middlewares/TokenVerificationMiddlware');
@@ -78,12 +74,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.get("/test", verifyToken, (req, res) => {
   try {
 
-    if (req.user){
+    if (req.user) {
 
       console.log("Body:", req.body);
       res.send({ "hit": true });
-    }else {
-      res.json({err: "token not found"});
+    } else {
+      res.json({ err: "token not found" });
     }
 
   } catch (err) {
@@ -119,7 +115,7 @@ app.use(function (err, req, res, next) {
 
   res.status(err.status || 500);
   const title = 'Error Page';
-  res.render('error', {title});
+  res.render('error', { title });
 });
 
 module.exports = app;

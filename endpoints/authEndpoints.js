@@ -83,6 +83,15 @@ const getUserData = (req, res) => {
         console.error(err);
     }
 }
+const gooleLogOut = (req, res) => {
+    try {
+        res.status(200);
+        jwtCookie.setHttpOnlyCookie(res, "access-token", '', new Date(0), "/");
+        return res.status(200).send({ message: 'Successfully signed out.' });
+    } catch (err) {
+        console.error(err);
+    }
+}
 
 
 module.exports = {
@@ -92,4 +101,5 @@ module.exports = {
     outlook,
     outlookCallback,
     getUserData,
+    gooleLogOut
 };
