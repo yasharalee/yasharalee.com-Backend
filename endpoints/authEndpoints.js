@@ -85,11 +85,18 @@ const getUserData = (req, res) => {
 }
 const gooleLogOut = (req, res) => {
     try {
-        res.status(200);
-        jwtCookie.setHttpOnlyCookie(res, "access-token", '', new Date(0), "/");
-        return res.status(200).send({ message: 'Successfully signed out.' });
+        const httpOnlyOptions = {
+            secure: true,
+            httpOnly: true,
+            sameSite: "None",
+
+        };
+
+        res.clearCookie('access-token', httpOnlyOptions);
+
+        return res.status(200).json({ message: 'Logged out successfully' });
     } catch (err) {
-        console.error(err);
+        return res.status(500).json({ err });
     }
 }
 
