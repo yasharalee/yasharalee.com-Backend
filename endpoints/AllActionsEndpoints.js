@@ -10,13 +10,13 @@ const createMessage = async (req, res) => {
             const user = req.user;
 
             const newMessage = {
-                fullName: req.fullName,
-                companyName: req.companyName,
-                email: req.email,
-                phoneNumber: req.phoneNumber,
-                links: req.links,
-                preferredContactMethods: req.preferredContactMethods,
-                message: req.message
+                fullName: req.body.fullName,
+                companyName: req.body.companyName,
+                email: req.body.email,
+                phoneNumber: req.body.phoneNumber,
+                links: req.body.links,
+                preferredContactMethods: req.body.preferredContactMethods,
+                message: req.body.message
             }
 
             user.messageingThread.push(newMessage);
