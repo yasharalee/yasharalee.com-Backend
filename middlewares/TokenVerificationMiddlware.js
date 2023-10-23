@@ -5,13 +5,7 @@ const verifyToken = (req, res, next) => {
 
     const tokenFromCookie = req.cookies ? req.cookies["access-token"] : null;
     const tokenFromHeader = req.headers && req.headers['authorization'] ? req.headers['authorization'].split(' ')[1] : null;
-    console.log("token from header:: "+ tokenFromHeader);
-    console.log("token from cookie:: "+ tokenFromCookie);
     const token = tokenFromCookie || tokenFromHeader;
-
-    console.log(req.headers);
-    console.log("Bearer token in veryfyToken is:: " + req.headers && req.headers['authorization']);
-    console.log("token in verifyToken is:: " + token);
 
     if (!token) {
         return res.status(401).json({ error: "Unauthorized or no token" });
@@ -24,8 +18,6 @@ const verifyToken = (req, res, next) => {
 
         try {
             const userId = decodedToken.userId || decodedToken.payload.userId;
-
-            console.log("UserId in verifyToken is:: " + userId);
 
             const user = await User.findById(userId);
 

@@ -6,10 +6,6 @@ const ses = new SES({ region: 'us-east-2', apiVersion: '2010-12-01' });
 
 
 function sendEmail(recipient, subject, message) {
-    console.log("email function has fired");
-    console.log("recipient :: " + recipient );
-    console.log('subject:: '+subject);
-    console.log('message:: ' + message);
 
 
     const params = {

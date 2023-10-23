@@ -4,7 +4,6 @@ const Post = require("../models/postSchema");
 
 const createMessage = async (req, res) => {
     try {
-        console.log("request in createMessage is:: " + req);
         if (req.user){
             
             const user = req.user;

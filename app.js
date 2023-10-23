@@ -49,8 +49,6 @@ app.use(async (req, res, next) => {
       visitCount = new RequestIp({ IpAddress: clientIp, Count: 1 });
       await visitCount.save();
     }
-
-    console.log(`IP: ${clientIp} | Visits: ${visitCount.Count}`);
   } catch (err) {
     console.error(err);
   }
@@ -76,7 +74,6 @@ app.get("/test", verifyToken, (req, res) => {
 
     if (req.user) {
 
-      console.log("Body:", req.body);
       res.send({ "hit": true });
     } else {
       res.json({ err: "token not found" });
@@ -89,7 +86,6 @@ app.get("/test", verifyToken, (req, res) => {
 
 app.get("/auth-cancelled", (req, res) => {
   try {
-    console.log("Body:", req.body);
     res.send({ "hit": true });
   } catch (err) {
     console.log('Err', err);
