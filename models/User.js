@@ -12,6 +12,10 @@ const loginHistorySchema = new mongoose.Schema({
 });
 
 const contactMessageSchema = new mongoose.Schema({
+    author: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+    },
     fullName: {
         type: String,
         trim: true,

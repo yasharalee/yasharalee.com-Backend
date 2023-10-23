@@ -2,24 +2,40 @@ const mongoose = require("mongoose");
 
 
 
-const authorizeRole = (requiredRole) => {
-    return (req, res, next) => {
-
+const verifyRole = (role) => {
+    return function (req, res, next) {
         try {
-            const role  = req.user.role;
-
-            if (role !== requiredRole) {
-                return res.status(403).json({ error: "Forbidden" });
+            if (req.user && req.user.role.includes(role)) {
+                next();
+            } else {
+                return res.status(403).send('You are unauthorised to perform this action');
             }
-
-            next();
         } catch (err) {
-            console.error(err);
-            res.status(401).json({ err });
+            console.log(err);
+            return res.status(500).json({ error: "Server Error" });
         }
-    };
-};
+    }
+}
+
+
+const verifyAccountOwnerShip = (userId, sourceRequested) => {
+
+    try {
+        if (sourceRequested.author === userId) {
+            return true;
+        } else {
+            return false;
+        }
+    } catch (err) {
+        console.log(err);
+        return false;
+    }
+
+}
 
 
 
-module.exports = { authorizeRole };
+
+
+
+module.exports = { verifyRole, verifyAccountOwnerShip };

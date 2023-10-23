@@ -1,6 +1,7 @@
 const Contact = require("../models/ContactSchema");
 const User = require("../models/User");
 const Post = require("../models/postSchema");
+const { verifyAccountOwnerShip } = require("../middlewares/Authorize");
 
 const createMessage = async (req, res) => {
     try {
@@ -9,6 +10,7 @@ const createMessage = async (req, res) => {
             const user = req.user;
 
             const newMessage = {
+                author: req.user._id,
                 fullName: req.body.fullName,
                 companyName: req.body.companyName,
                 email: req.body.email,
@@ -56,7 +58,6 @@ const createMessage = async (req, res) => {
         console.error(err);
         return res.status(500).json({
             success: false,
-            err,
             message: "An error occurred while creating the contact. Please try again later."
         });
     }
@@ -88,7 +89,6 @@ const getMessages = async (req, res) => {
         console.error(err);
         res.status(500).json({
             success: false,
-            err,
             message: "An error occurred while retrieving the contacts. Please try again later."
         });
     }
@@ -105,16 +105,19 @@ const getMessage = async (req, res) => {
                 message: "Contact not found."
             });
         }
+        if (verifyAccountOwnerShip(req.user._id, message)){
+            return res.status(200).json({
+                success: true,
+                data: message
+            });
+        }else {
+           return res.status(403).send('You are unauthorized to view this contact');
+        }
 
-        res.status(200).json({
-            success: true,
-            data: message
-        });
     } catch (err) {
         console.error(err);
-        res.status(500).json({
+        return res.status(500).json({
             success: false,
-            err,
             message: "An error occurred while retrieving the contact. Please try again later."
         });
     }
