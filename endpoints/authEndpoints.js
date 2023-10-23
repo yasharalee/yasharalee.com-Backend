@@ -12,6 +12,20 @@ const google = (req, res, next) => {
     })(req, res, next);
 };
 
+const isSignedin = (req, res, next) => {
+    try{
+        if(req.user){
+            return res.status(200).json({ signedIn: true });
+        }else {
+            return res.status(200).json({ signedIn: false });
+        }
+
+    }catch(err){
+        console.log(err);
+        return res.status(500).json({err: "Internal error"});
+    }
+};
+
 const googleCanceled = (req, res, next) => {
     res.redirect('https://yaslanding.com/auth-cancelled');
 };
@@ -112,11 +126,12 @@ const gooleLogOut = (req, res) => {
 
 
 module.exports = {
-    google,
-    googleCanceled,
-    googleCallback,
-    outlook,
-    outlookCallback,
-    getUserData,
-    gooleLogOut
+  google,
+  googleCanceled,
+  googleCallback,
+  outlook,
+  outlookCallback,
+  getUserData,
+  gooleLogOut,
+  isSignedin,
 };
