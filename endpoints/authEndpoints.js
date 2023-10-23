@@ -75,12 +75,20 @@ const outlookCallback = (req, res, next) => {
 
 const getUserData = (req, res) => {
     try {
-        res.status(200);
+        const user = { ...req.user._doc };
+        delete user.password;
+        delete user.passwordResetToken;
+        delete user.loginHistory;
+        delete user.googleId;
+        delete user.outlookId;
+        
         const token = jwtCookie.generateToken({ userId: req.user._id, fullName: req.user.fullName, role: req.user.role });
         jwtCookie.setHttpOnlyCookie(res, "access-token", token, new Date(Date.now() + 2 * 60 * 60 * 1000), "/");
-        return res.json({ user: req.user });
+
+        return res.status(200).json({ user });
     } catch (err) {
         console.error(err);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 }
 const gooleLogOut = (req, res) => {
