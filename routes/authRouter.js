@@ -11,7 +11,7 @@ router.get("/google", authEndpoints.google);
 router.get('/google/callback', authEndpoints.googleCallback);
 router.get('/google/Canceled', authEndpoints.googleCanceled);
 router.post('/google/gooleLogOut', authEndpoints.gooleLogOut);
-router.post("/google/isSignedin",justAddUserIfAny , authEndpoints.isSignedin);
+router.get("/google/isSignedin",justAddUserIfAny , authEndpoints.isSignedin);
 
 router.get("/outlook", authEndpoints.outlook);
 router.get('/outlook/callback', authEndpoints.outlookCallback);
