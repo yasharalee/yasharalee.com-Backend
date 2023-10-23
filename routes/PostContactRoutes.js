@@ -2,9 +2,9 @@ const express = require("express");
 const router = express.Router();
 const ContactActions = require('../endpoints/AllActionsEndpoints');
 const { verifyRole } = require("../middlewares/Authorize");
-const { verifyToken } = require("../middlewares/TokenVerificationMiddlware");
+const { verifyToken, justAddUserIfAny } = require("../middlewares/TokenVerificationMiddlware");
 
-router.post("/createMessage", verifyToken ,ContactActions.createMessage);
+router.post("/createMessage", justAddUserIfAny ,ContactActions.createMessage);
 router.get("/getMessages", verifyToken, verifyRole("owner"),ContactActions.getMessages);
 router.get("/getMessage/:id", verifyToken, ContactActions.getMessage);
 
