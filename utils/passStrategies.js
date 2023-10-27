@@ -7,7 +7,7 @@ const jwt = require('jsonwebtoken');
 passport.use(new GoogleStrategy({
     clientID: process.env.GoogleClintID,
     clientSecret: process.env.GoogleClientSecret,
-    callbackURL: 'https://yaslanding.com/auth/google/callback'
+    callbackURL: process.env.Environment+'/auth/google/callback'
 }, async (accessToken, refreshToken, profile, done) => {
     try {
        
@@ -33,27 +33,32 @@ passport.use(new GoogleStrategy({
 }));
 
 
-passport.use(new OutlookStrategy({
-    clientID: process.env.OutlookClientID,
-    clientSecret: process.env.OutlookSecretValue,
-    callbackURL: 'https://yaslanding.com/auth/outlook/callback'
-}, async (accessToken, refreshToken, profile, done) => {
-    try {
+passport.use(
+  new OutlookStrategy(
+    {
+      clientID: process.env.OutlookClientID,
+      clientSecret: process.env.OutlookSecretValue,
+      callbackURL: process.env.Environment + "/auth/outlook/callback",
+    },
+    async (accessToken, refreshToken, profile, done) => {
+      try {
         let user = await User.findOne({ outlookId: profile.id });
         if (!user) {
-            user = new User({
-                fullName: profile.displayName,
-                outlookId: profile.id,
-                originalEmail: profile.emails[0].value,
-                normalizedEmail: profile.emails[0].value.toLowerCase()
-            });
-            await user.save();
+          user = new User({
+            fullName: profile.displayName,
+            outlookId: profile.id,
+            originalEmail: profile.emails[0].value,
+            normalizedEmail: profile.emails[0].value.toLowerCase(),
+          });
+          await user.save();
         }
 
         const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET);
         done(null, { user, token });
-    } catch (err) {
+      } catch (err) {
         done(err);
+      }
     }
-}));
+  )
+);
 

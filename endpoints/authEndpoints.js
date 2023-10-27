@@ -55,7 +55,8 @@ const googleCallback = (req, res, next) => {
         // mailit.sendEmail(recipientEmail, subject, messageBody);
 
 
-        res.redirect('https://yasalee-qa.com/redirect/' + token);
+        //res.redirect('https://yasalee-qa.com/redirect/' + token);
+        res.redirect("https://localhost:3000/redirect/" + token);
 
 
     })(req, res, next);
