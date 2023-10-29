@@ -11,48 +11,55 @@ const loginHistorySchema = new mongoose.Schema({
     },
 });
 
-const contactMessageSchema = new mongoose.Schema({
+const contactMessageSchema = new mongoose.Schema(
+  {
     author: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
     },
     fullName: {
-        type: String,
-        trim: true,
-        default: ''
+      type: String,
+      trim: true,
+      default: "",
     },
     companyName: {
-        type: String,
-        trim: true,
-        default: ''
+      type: String,
+      trim: true,
+      default: "",
     },
     email: {
-        type: String,
-        trim: true,
+      type: String,
+      trim: true,
     },
     phoneNumber: {
-        type: String,
-        trim: true,
-        default: ''
+      type: String,
+      trim: true,
+      default: "",
     },
     links: {
-        type: String,
-        trim: true,
-        default: ''
+      type: String,
+      trim: true,
+      default: "",
     },
     preferredContactMethods: {
-        type: [String],
-        enum: ['email', 'phone'],
-        default: ['email']
+      type: [String],
+      enum: ["email", "phone"],
+      default: ["email"],
     },
     message: {
-        type: String,
-        trim: true,
-        default: ''
-    }
-}, {
-    timestamps: true
-});
+      type: String,
+      trim: true,
+      default: "",
+    },
+    read: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
 
 
 const userSchema = new mongoose.Schema({

@@ -11,6 +11,7 @@ const { SESClient, SendEmailCommand } = require("@aws-sdk/client-ses");
 const RequestIp = require("./models/RequesterIPSchema");
 const PostContact = require("./routes/PostContactRoutes");
 const authRouter = require("./routes/authRouter");
+const UserRouter = require('./routes/userRouter');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 const { verifyToken } = require('./middlewares/TokenVerificationMiddlware');
@@ -96,6 +97,7 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/auth', authRouter);
 app.use('/Messages', PostContact);
+app.use("/client", UserRouter);
 
 
 app.use(function (req, res, next) {
