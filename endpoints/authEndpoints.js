@@ -24,6 +24,23 @@ const isSignedin = (req, res, next) => {
   }
 };
 
+
+const getPermission = (req, res) => {
+  const {user} = req.user;
+  try{
+    if (user.role === process.env.role){
+      return res.status(200).send({permited : true, err: null});
+    }else{
+      return res.status(403).send({permited : false, err: "You are not permited to do this action"});
+    }
+  }catch(err){
+    console.log(err);
+    return res.status(500).send({permited : false, err: 'Server Error. Please retry later.'})
+  }
+}
+
+
+
 const googleCanceled = (req, res, next) => {
   res.redirect("https://yaslanding.com/auth-cancelled");
 };
@@ -146,4 +163,5 @@ module.exports = {
   getUserData,
   gooleLogOut,
   isSignedin,
+  getPermission,
 };
