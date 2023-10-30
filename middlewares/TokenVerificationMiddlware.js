@@ -10,12 +10,12 @@ const verifyToken = (req, res, next) => {
   const token = tokenFromCookie || tokenFromHeader;
 
   if (!token) {
-    return res.status(401).json({ err: "Unauthorized or no token" });
+    return res.status(401).json({ err: "Unable to authenticate" });
   }
 
   jwt.verify(token, process.env.JWT_SECRET, async (err, decodedToken) => {
     if (err) {
-      return res.status(401).json({ err: "Invalid token", err });
+      return res.status(401).json({ err: "Unauthorized user"});
     }
 
     try {
@@ -33,7 +33,7 @@ const verifyToken = (req, res, next) => {
       next();
     } catch (err) {
       console.error(err);
-      return res.status(500).json({ err: "Internal server error" });
+      return res.status(500).json({ err: "Server Error. Please retry later" });
     }
   });
 };
@@ -53,7 +53,7 @@ const justAddUserIfAny = (req, res, next) => {
 
   jwt.verify(token, process.env.JWT_SECRET, async (err, decodedToken) => {
     if (err) {
-      return res.status(401).json({ err: "Invalid token", err });
+      return res.status(401).json({ err: "Unable to authenticate" });
     }
 
     try {
@@ -72,7 +72,7 @@ const justAddUserIfAny = (req, res, next) => {
       next();
     } catch (err) {
       console.error(err);
-      return res.status(500).json({ err: "Internal server error" });
+      return res.status(500).json({ err: "Server Error. Please retry later" });
     }
   });
 };
@@ -84,13 +84,11 @@ const verifyUserName = (req, res, next) => {
   try {
     if (fullName !== userName || normalizedEmail !== email) {
       req.userNameVerified = false;
-      console.log("The users Name or Email in form has been modyfied");
-      return res
-        .status(400)
-        .json({
-          success: false,
-          err: "The users Name or Email in form has been modyfied",
-        });
+      console.log("Please keep name and email unchanged to proceed.");
+      return res.status(400).json({
+        success: false,
+        err: "Please keep name and email unchanged to proceed.",
+      });
     }
     req.userNameVerified = true;
     next();
@@ -98,7 +96,7 @@ const verifyUserName = (req, res, next) => {
     console.log(err);
     return res
       .status(500)
-      .json({ success: false, err: "Internal server error" });
+      .json({ success: false, err: "Server Error. Please retry later" });
   }
 };
 

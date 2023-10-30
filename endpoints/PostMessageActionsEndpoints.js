@@ -50,7 +50,7 @@ const getNewMesages = async (req, res) => {
     }
   } catch (err) {
     console.log(err);
-    return res.status(500).json({ err: "Internal error" });
+    return res.status(500).json({ err: "Server Error. Please retry later." });
   }
 };
 
@@ -74,7 +74,13 @@ const createMessage = async (req, res) => {
 
       await user.save();
 
-     return res.status(201).json({ success: true, newMessage });
+     return res
+       .status(201)
+       .json({
+         success: true,
+         newMessage,
+         err: "Thank you for your time, I will be in touch shortly",
+       });
     } else {
       return res
         .status(400)
@@ -87,7 +93,7 @@ const createMessage = async (req, res) => {
     console.error(err);
     return res.status(500).json({
       success: false,
-      message:
+      err:
         "An error occurred while creating the contact. Please try again later.",
     });
   }
@@ -121,18 +127,19 @@ const createAnonymousMessage = async (req, res) => {
       return res.status(201).json({
         success: true,
         newMessage: newContact,
+        err: "Thank you for your time, I will be in touch shortly",
       });
     } else {
       return res.status(400).json({
         success: false,
-        err: "Bad request",
+        err: "Fill in all required fields.",
       });
     }
   } catch (err) {
     console.log(err);
     return res
       .status(500)
-      .send({ success: false, err: "Internal server error" });
+      .send({ success: false, err: "Server Error. Please retry later." });
   }
 };
 

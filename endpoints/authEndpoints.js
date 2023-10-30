@@ -20,7 +20,7 @@ const isSignedin = (req, res, next) => {
     }
   } catch (err) {
     console.log(err);
-    return res.status(500).json({ err: "Internal error" });
+    return res.status(500).json({ err: "Server Error. Please retry later." });
   }
 };
 
@@ -116,7 +116,7 @@ const getUserData = (req, res) => {
     return res.status(200).json({ user });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).json({ error: "Server Error. Please retry later." });
   }
 };
 const gooleLogOut = (req, res) => {
