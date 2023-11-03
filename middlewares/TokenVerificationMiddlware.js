@@ -10,11 +10,13 @@ const verifyToken = (req, res, next) => {
   const token = tokenFromCookie || tokenFromHeader;
 
   if (!token) {
+    console.log("No token has been sent along with request");
     return res.status(401).json({ err: "Unable to authenticate" });
   }
 
   jwt.verify(token, process.env.JWT_SECRET, async (err, decodedToken) => {
     if (err) {
+      console.log("Token is wrong");
       return res.status(401).json({ err: "Unauthorized user"});
     }
 

@@ -9,6 +9,7 @@ const {
 
 router.post("/createMessage", verifyToken, verifyUserName ,ContactActions.createMessage);
 router.post("/createAnonymousMessage", ContactActions.createAnonymousMessage);
+router.post("/createAdminMessage", verifyToken, verifyRole(process.env.role), ContactActions.createAdminMessage);
 
 router.get("/getMessages", verifyToken, verifyRole(process.env.role),ContactActions.getMessages);
 router.get("/getMessage/:id", verifyToken, ContactActions.getMessage);

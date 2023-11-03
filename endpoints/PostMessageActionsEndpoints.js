@@ -44,7 +44,7 @@ const getNewMesages = async (req, res) => {
     ]);
 
     if (usersWithUnreadMessages.length > 0) {
-      res.status(200).json({ data: usersWithUnreadMessages });
+      res.status(200).json({ data: usersWithUnreadMessages, err:null });
     } else {
       res.status(404).json({ err: "No unread messages found" });
     }
@@ -53,6 +53,61 @@ const getNewMesages = async (req, res) => {
     return res.status(500).json({ err: "Server Error. Please retry later." });
   }
 };
+
+
+const createAdminMessage = async (req, res) => {
+  try {
+    if (req.user) {
+      const user = req.user;
+
+      console.log(req.body);
+
+      const newMessage = {
+        author: user._id,
+        targetId: req.body.targetId.toString(),
+        fullName: req.body.fullName,
+        companyName: req.body.companyName,
+        email: req.body.email,
+        phoneNumber: req.body.phoneNumber,
+        links: req.body.links,
+        preferredContactMethods: req.body.preferredContactMethods,
+        message: req.body.message,
+      };
+
+      let targetUser = await User.findOne({_id: req.body.targetId});
+
+      targetUser.messageingThread.push(newMessage);
+
+      await targetUser.save();
+     
+
+      return res.status(201).json({
+        success: true,
+        newMessage: targetUser,
+        err: "Created under users message thread",
+      });
+    } else {
+      return res.status(400).json({
+        success: false,
+        err: "Could not create the message",
+      });
+    }
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({
+      success: false,
+      err: "An error occurred while creating the contact. Please try again later.",
+    });
+  }
+};
+
+
+
+
+
+
+
+
 
 const createMessage = async (req, res) => {
   try {
@@ -122,8 +177,9 @@ const createAnonymousMessage = async (req, res) => {
     });
 
     const theMessage = await newContact.save();
-
+    
     if (theMessage) {
+      console.log(theMessage);
       return res.status(201).json({
         success: true,
         newMessage: newContact,
@@ -351,4 +407,5 @@ module.exports = {
   getMessage,
   getNewMesages,
   createAnonymousMessage,
+  createAdminMessage,
 };

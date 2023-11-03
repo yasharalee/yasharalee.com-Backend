@@ -7,7 +7,7 @@ const mailit = require("../utils/emailUtils");
 const google = (req, res, next) => {
   passport.authenticate("google", {
     scope: ["profile", "email"],
-    failureRedirect: "https://yaslanding.com/auth/Gcancelled",
+    failureRedirect: process.env.Environment + "/auth/Gcancelled",
   })(req, res, next);
 };
 
@@ -24,22 +24,24 @@ const isSignedin = (req, res, next) => {
   }
 };
 
-
 const getPermission = (req, res) => {
-  const {user} = req.user;
-  try{
-    if (user.role === process.env.role){
-      return res.status(200).send({permited : true, err: null});
-    }else{
-      return res.status(403).send({permited : false, err: "You are not permited to do this action"});
+  const { user } = req;
+  try {
+    if (user.role === process.env.role) {
+      return res.status(200).send({ permited: true, err: null });
+    } else {
+      return res.status(403).send({
+        permited: false,
+        err: "You are not permited to do this action",
+      });
     }
-  }catch(err){
+  } catch (err) {
     console.log(err);
-    return res.status(500).send({permited : false, err: 'Server Error. Please retry later.'})
+    return res
+      .status(500)
+      .send({ permited: false, err: "Server Error. Please retry later." });
   }
-}
-
-
+};
 
 const googleCanceled = (req, res, next) => {
   res.redirect("https://yaslanding.com/auth-cancelled");
@@ -72,8 +74,7 @@ const googleCallback = (req, res, next) => {
     // const messageBody = `Dear ${user.fullName} \n This Email has been sent to let you know that your account has been logged in.\n\n https://yasharalee.com \n\n IP: ${user.loginHistory[user.loginHistory.length - 1].ipAddress} \n At: ${user.loginHistory[user.loginHistory.length - 1].timestamp}`;
     // mailit.sendEmail(recipientEmail, subject, messageBody);
 
-    //res.redirect('https://yasalee-qa.com/redirect/' + token);
-    res.redirect(process.env.UI_Env+"/redirect/" + token);
+    res.redirect(process.env.UI_Env + "/redirect/" + token);
   })(req, res, next);
 };
 
@@ -104,7 +105,7 @@ const outlookCallback = (req, res, next) => {
       new Date(Date.now() + 1 * 60 * 60 * 1000),
       "/"
     );
-    res.redirect("https://localhost:443/test");
+    res.redirect(process.env.Environment + "/test");
   })(req, res, next);
 };
 
