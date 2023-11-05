@@ -22,10 +22,7 @@ const sesClient = new SESClient({ region: 'us-east-2' });
 
 
 const allowedOrigins = [
-  "https://98.246.0.185",
-  "https://yasharalee.com",
   "https://yasalee-qa.com",
-  "https://localhost:3000"
 ];
 
 app.use(
