@@ -115,7 +115,7 @@ const outlookCallback = (req, res, next) => {
       new Date(Date.now() + 1 * 60 * 60 * 1000),
       "/"
     );
-    res.redirect(process.env.UI_Env + "/redirect/" + token);
+    res.redirect(process.env.Environment + "/test");
   })(req, res, next);
 };
 

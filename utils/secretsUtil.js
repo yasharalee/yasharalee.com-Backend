@@ -1,4 +1,5 @@
-
+// Removed AWS v2 import
+// const AWS = require("aws-sdk");
 
 const { SecretsManager } = require("@aws-sdk/client-secrets-manager");
 

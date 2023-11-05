@@ -1,33 +1,23 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
-const {getSecret} = require("../utils/secretsUtil");
 
-const verifyToken = async (req, res, next) => {
-  const JWT_SECRET = await getSecret("JWT_SECRET")+"";
-  console.log("JWT-secter::verifyToken " + JWT_SECRET);
-
-  console.log("request is:: " + req.headers["authorization"]);
-
+const verifyToken = (req, res, next) => {
   const tokenFromCookie = req.cookies ? req.cookies["access-token"] : null;
   const tokenFromHeader =
-    req.headers && req.headers["authorization"] ? req.headers["authorization"].split(" ")[1] : null;
-
-   const token = tokenFromCookie || tokenFromHeader;
-   console.log(token);
-   const token1 = token.split(" ")[1];
-
+    req.headers && req.headers["authorization"]
+      ? req.headers["authorization"].split(" ")[1]
+      : null;
+  const token = tokenFromCookie || tokenFromHeader;
 
   if (!token) {
     console.log("No token has been sent along with request");
     return res.status(401).json({ err: "Unable to authenticate" });
   }
 
-  jwt.verify(token1, JWT_SECRET, async (err, decodedToken) => {
+  jwt.verify(token, process.env.JWT_SECRET, async (err, decodedToken) => {
     if (err) {
-      console.error("Error verifying JWT:", err.message);
-      console.log("Received token:", token);
       console.log("Token is wrong");
-      return res.status(401).json({ err: "Unauthorized user" });
+      return res.status(401).json({ err: "Unauthorized user"});
     }
 
     try {
@@ -50,14 +40,7 @@ const verifyToken = async (req, res, next) => {
   });
 };
 
-const justAddUserIfAny = async (req, res, next) => {
-
- console.log("request is:: " + req.headers["authorization"]);
-
-
-    const JWT_SECRET = await getSecret("JWT_SECRET")+"";
-    console.log("JWT-secter AddAny:: " + JWT_SECRET);
-
+const justAddUserIfAny = (req, res, next) => {
   const tokenFromCookie = req.cookies ? req.cookies["access-token"] : null;
   const tokenFromHeader =
     req.headers && req.headers["authorization"]
@@ -70,10 +53,8 @@ const justAddUserIfAny = async (req, res, next) => {
     return;
   }
 
-  jwt.verify(token, JWT_SECRET, async (err, decodedToken) => {
+  jwt.verify(token, process.env.JWT_SECRET, async (err, decodedToken) => {
     if (err) {
-      console.error("Error verifying JWT:", err.message);
-      console.log("Received token:", token);
       return res.status(401).json({ err: "Unable to authenticate" });
     }
 
