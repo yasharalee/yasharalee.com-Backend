@@ -1,7 +1,9 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
+const {getSecret} = require('../utils/secretsUtil');
 
-const verifyToken = (req, res, next) => {
+const verifyToken = async(req, res, next) => {
+ const JWT_Secret = await getSecret("JWT_SECRET");
   const tokenFromCookie = req.cookies ? req.cookies["access-token"] : null;
   const tokenFromHeader =
     req.headers && req.headers["authorization"]
@@ -14,10 +16,10 @@ const verifyToken = (req, res, next) => {
     return res.status(401).json({ err: "Unable to authenticate" });
   }
 
-  jwt.verify(token, process.env.JWT_SECRET, async (err, decodedToken) => {
+  jwt.verify(token, JWT_Secret, async (err, decodedToken) => {
     if (err) {
       console.log("Token is wrong");
-      return res.status(401).json({ err: "Unauthorized user"});
+      return res.status(401).json({ err: "Unauthorized user" });
     }
 
     try {
@@ -40,7 +42,8 @@ const verifyToken = (req, res, next) => {
   });
 };
 
-const justAddUserIfAny = (req, res, next) => {
+const justAddUserIfAny = async (req, res, next) => {
+  const JWT_Secret = await getSecret("JWT_SECRET");
   const tokenFromCookie = req.cookies ? req.cookies["access-token"] : null;
   const tokenFromHeader =
     req.headers && req.headers["authorization"]
@@ -53,7 +56,7 @@ const justAddUserIfAny = (req, res, next) => {
     return;
   }
 
-  jwt.verify(token, process.env.JWT_SECRET, async (err, decodedToken) => {
+  jwt.verify(token, JWT_Secret, async (err, decodedToken) => {
     if (err) {
       return res.status(401).json({ err: "Unable to authenticate" });
     }
