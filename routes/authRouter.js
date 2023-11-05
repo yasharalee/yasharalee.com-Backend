@@ -16,6 +16,7 @@ router.get("/outlook", authEndpoints.outlook);
 router.get("/outlook/callback", authEndpoints.outlookCallback);
 
 router.get("/getUserData", verifyToken, authEndpoints.getUserData);
+router.get("/getMesagesByUser", verifyToken, authEndpoints.getMesagesByUser);
 router.get("/getPermission", verifyToken, authEndpoints.getPermission);
 
 module.exports = router;

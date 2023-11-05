@@ -32,7 +32,7 @@ app.use(
   cors({
     origin: allowedOrigins,
     credentials: true,
-    allowedHeaders: ["content-type", "Authorization"]
+    allowedHeaders: ["content-type", "Authorization", "getUser"],
   })
 );
 
