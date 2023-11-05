@@ -60,8 +60,6 @@ const createAdminMessage = async (req, res) => {
     if (req.user) {
       const user = req.user;
 
-      console.log(req.body);
-
       const newMessage = {
         author: user._id,
         targetId: req.body.targetId.toString(),
@@ -179,7 +177,6 @@ const createAnonymousMessage = async (req, res) => {
     const theMessage = await newContact.save();
     
     if (theMessage) {
-      console.log(theMessage);
       return res.status(201).json({
         success: true,
         newMessage: newContact,

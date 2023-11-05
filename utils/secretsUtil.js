@@ -40,7 +40,6 @@ const initializeEnvVars = async (key) => {
 
 const getSecret = async (key) => {
   const secret = await initializeEnvVars(key);
-  console.log( key +" : " + secret);
   return secret;
 };
 

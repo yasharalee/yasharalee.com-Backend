@@ -1,29 +1,38 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
-const {getSecret} = require('../utils/secretsUtil');
+const {getSecret} = require("../utils/secretsUtil");
 
 const verifyToken = async (req, res, next) => {
+  const JWT_SECRET = await getSecret("JWT_SECRET")+"";
+  console.log("JWT-secter::verifyToken " + JWT_SECRET);
+
+  console.log("request is:: " + req.headers["authorization"]);
+
   const tokenFromCookie = req.cookies ? req.cookies["access-token"] : null;
   const tokenFromHeader =
-    req.headers && req.headers["authorization"]
-      ? req.headers["authorization"].split(" ")[1]
-      : null;
-  const token = tokenFromCookie || tokenFromHeader;
+    req.headers && req.headers["authorization"] ? req.headers["authorization"].split(" ")[1] : null;
+
+   const token = tokenFromCookie || tokenFromHeader;
+   console.log(token);
+   const token1 = token.split(" ")[1];
+
 
   if (!token) {
     console.log("No token has been sent along with request");
     return res.status(401).json({ err: "Unable to authenticate" });
   }
 
-  try {
-    const JWT_SECRET = await getSecret("JWT_SECRET");
-    jwt.verify(token, JWT_SECRET, async (err, decodedToken) => {
-      if (err) {
-        console.log("Token is wrong");
-        return res.status(401).json({ err: "Unauthorized user" });
-      }
+  jwt.verify(token1, JWT_SECRET, async (err, decodedToken) => {
+    if (err) {
+      console.error("Error verifying JWT:", err.message);
+      console.log("Received token:", token);
+      console.log("Token is wrong");
+      return res.status(401).json({ err: "Unauthorized user" });
+    }
 
+    try {
       const userId = decodedToken.userId || decodedToken.payload.userId;
+
       const user = await User.findById(userId);
 
       if (!user) {
@@ -32,16 +41,23 @@ const verifyToken = async (req, res, next) => {
 
       req.user = user;
       req.token = token;
+
       next();
-    });
-  } catch (err) {
-    console.error(err);
-    return res.status(500).json({ err: "Server Error. Please retry later" });
-  }
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json({ err: "Server Error. Please retry later" });
+    }
+  });
 };
 
-
 const justAddUserIfAny = async (req, res, next) => {
+
+ console.log("request is:: " + req.headers["authorization"]);
+
+
+    const JWT_SECRET = await getSecret("JWT_SECRET")+"";
+    console.log("JWT-secter AddAny:: " + JWT_SECRET);
+
   const tokenFromCookie = req.cookies ? req.cookies["access-token"] : null;
   const tokenFromHeader =
     req.headers && req.headers["authorization"]
@@ -53,9 +69,11 @@ const justAddUserIfAny = async (req, res, next) => {
     next();
     return;
   }
-const JWT_SECRET = await getSecret("JWT_SECRET");
+
   jwt.verify(token, JWT_SECRET, async (err, decodedToken) => {
     if (err) {
+      console.error("Error verifying JWT:", err.message);
+      console.log("Received token:", token);
       return res.status(401).json({ err: "Unable to authenticate" });
     }
 
