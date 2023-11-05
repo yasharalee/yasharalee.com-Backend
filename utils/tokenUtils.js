@@ -1,14 +1,14 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
+const {getSecret} = require('./secretsUtil');
 
 
-
-const generateToken = (payload) => {
-    return jwt.sign({ payload }, process.env.JWT_SECRET, {
-        expiresIn: "3h",
-    });
+const generateToken = async (payload) => {
+  const JWT_SECRET = await getSecret("JWT_SECRET");
+  return jwt.sign({ payload }, JWT_SECRET, {
+    expiresIn: "3h",
+  });
 };
-
 
 
 const setHttpOnlyCookie = (res, name, value, expiration, Path) => {

@@ -39,7 +39,7 @@ app.use(
 
 app.use(async (req, res, next) => {
   const clientIp = req.connection.remoteAddress || req.headers['x-forwarded-for'];
-
+console.log(clientIp);
   try {
     let visitCount = await RequestIp.findOne({ IpAddress: clientIp }).select('Count');
 

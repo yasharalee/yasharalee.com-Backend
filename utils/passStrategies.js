@@ -6,11 +6,19 @@ const jwt = require("jsonwebtoken");
 const { getSecret } = require("./secretsUtil");
 
 const initializeStrategies = async () => {
-  const googleClientID = await getSecret("GoogleClintID");
-  const JWT_SECRET = await getSecret("JWT_SECRET");
-  const OutlookSecretValue = await getSecret("OutlookSecretValue");
-  const OutlookClientID = await getSecret("OutlookClientID");
-  const GoogleClientSecret = await getSecret("GoogleClientSecret");
+ const [
+   googleClientID,
+   JWT_SECRET,
+   OutlookSecretValue,
+   OutlookClientID,
+   GoogleClientSecret,
+ ] = await Promise.all([
+   getSecret("GoogleClintID"),
+   getSecret("JWT_SECRET"),
+   getSecret("OutlookSecretValue"),
+   getSecret("OutlookClientID"),
+   getSecret("GoogleClientSecret"),
+ ]);
 
   passport.use(
     new GoogleStrategy(
@@ -84,4 +92,5 @@ const initializeStrategies = async () => {
 
 initializeStrategies().catch((err) => {
   console.error("Failed to initialize passport strategies:", err);
+  process.exit(1);
 });
