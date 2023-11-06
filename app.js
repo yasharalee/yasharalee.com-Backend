@@ -12,8 +12,8 @@ const RequestIp = require("./models/RequesterIPSchema");
 const PostContact = require("./routes/PostContactRoutes");
 const authRouter = require("./routes/authRouter");
 const UserRouter = require('./routes/userRouter');
+const postRouter = require('./routes/postRoute');
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
 const { verifyToken } = require('./middlewares/TokenVerificationMiddlware');
 
 var app = express();
@@ -22,7 +22,9 @@ const sesClient = new SESClient({ region: 'us-east-2' });
 
 
 const allowedOrigins = [
+  ,
   "https://yasalee-qa.com",
+  "https://localhost:3000"
 ];
 
 app.use(
@@ -91,10 +93,10 @@ app.get("/auth-cancelled", (req, res) => {
 });
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
 app.use('/auth', authRouter);
 app.use('/Messages', PostContact);
 app.use("/client", UserRouter);
+app.use("/posts", postRouter);
 
 
 app.use(function (req, res, next) {
