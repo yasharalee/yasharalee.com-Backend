@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const yasPostSchema = new mongoose.Schema({
+const aboutMePostSchema = new mongoose.Schema({
     category: {
         type: String,
         required: true,
@@ -23,6 +23,6 @@ const yasPostSchema = new mongoose.Schema({
     }
 });
 
-const YasPost = mongoose.model("yasPost", yasPostSchema);
+const AboutMePost = mongoose.model("AboutMePost", aboutMePostSchema);
 
-module.exports = YasPost;
+module.exports = AboutMePost;

@@ -1,80 +1,118 @@
-var createError = require("http-errors");
-var express = require("express");
-var path = require("path");
-var cookieParser = require("cookie-parser");
-var logger = require("morgan");
+var createError = require('http-errors');
+var express = require('express');
+var path = require('path');
+var cookieParser = require('cookie-parser');
+var logger = require('morgan');
 const cors = require("cors");
 require("dotenv").config();
-
-
-const authRouter = require("./routes/authRoute");
-var indexRouter = require("./routes/index");
-var postRouter = require("./routes/blogPostRoute");
-var profileRoute = require("./routes/profileRoute");
-const MessageRouter = require("./routes/yasContactRoute");
+const passportSetup = require('./utils/passStrategies');
+const passport = require('passport');
+const { SESClient, SendEmailCommand } = require("@aws-sdk/client-ses");
+const RequestIp = require("./models/RequesterIPSchema");
+const PostContact = require("./routes/PostContactRoutes");
+const authRouter = require("./routes/authRouter");
+const UserRouter = require('./routes/userRouter');
+const postRouter = require('./routes/postRoute');
+var indexRouter = require('./routes/index');
+const { verifyToken } = require('./middlewares/TokenVerificationMiddlware');
 
 var app = express();
 
-// app.set('trust proxy', true);
+const sesClient = new SESClient({ region: 'us-east-2' });
 
-// Define the allowed origins for CORS
+
 const allowedOrigins = [
-  "https://98.246.0.185",
-  "http://localhost:3000",
-  "https://yasharalee.com",
-  "https://lapiselin.com"
+  ,
+  "https://yasalee-qa.com",
+  "https://localhost:3000"
 ];
 
-// CORS middleware
 app.use(
   cors({
     origin: allowedOrigins,
     credentials: true,
-    allowedHeaders: "content-type",
+    allowedHeaders: ["content-type", "Authorization", "getUser"],
   })
 );
 
-// view engine setup
-app.set("views", path.join(__dirname, "views"));
-app.set("view engine", "jade");
 
-app.use(logger("dev"));
+app.use(async (req, res, next) => {
+  const clientIp = req.connection.remoteAddress || req.headers['x-forwarded-for'];
+
+  try {
+    let visitCount = await RequestIp.findOne({ IpAddress: clientIp }).select('Count');
+
+    if (visitCount) {
+      visitCount.Count++;
+      await visitCount.save();
+    } else {
+      visitCount = new RequestIp({ IpAddress: clientIp, Count: 1 });
+      await visitCount.save();
+    }
+  } catch (err) {
+    console.error(err);
+  }
+
+  next();
+});
+
+
+
+// view engine setup
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'jade');
+
+app.use(passport.initialize());
+app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(path.join(__dirname, 'public')));
 
+app.get("/test", verifyToken, (req, res) => {
+  try {
 
-app.get("/test", (req, res) => {
+    if (req.user) {
+
+      res.send({ "hit": true });
+    } else {
+      res.json({ err: "token not found" });
+    }
+
+  } catch (err) {
+    console.log('Err', err);
+  }
+});
+
+app.get("/auth-cancelled", (req, res) => {
   try {
     res.send({ "hit": true });
   } catch (err) {
     console.log('Err', err);
   }
-})
-app.use("/", indexRouter);
-app.use("/auth", authRouter);
+});
+
+app.use('/', indexRouter);
+app.use('/auth', authRouter);
+app.use('/Messages', PostContact);
+app.use("/client", UserRouter);
 app.use("/posts", postRouter);
-app.use("/profile", profileRoute);
-app.use("/Contact", MessageRouter);
 
 
-
-
-// catch 404 and forward to error handler
 app.use(function (req, res, next) {
   next(createError(404));
 });
 
 // error handler
 app.use(function (err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get("env") === "development" ? err : {};
 
-  // render the error page
+  res.locals.message = err.message;
+  res.locals.error = req.app.get('env') === 'development' ? err : {};
+
+
   res.status(err.status || 500);
-  res.render("error");
+  const title = 'Error Page';
+  res.render('error', { title });
 });
 
 module.exports = app;
