@@ -17,6 +17,7 @@ const isSignedin = (req, res, next) => {
     if (req.user) {
       if (getUser) {
         const userToSend = {
+          _id:req.user._id,
           fullName: req.user.fullName,
           normalizedEmail: req.user.normalizedEmail,
           messageingThread: req.user.messageingThread,

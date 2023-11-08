@@ -24,6 +24,7 @@ const sesClient = new SESClient({ region: 'us-east-2' });
 const allowedOrigins = [
   ,
   "https://yasharalee.com",
+  "https://localhost:3000"
 ];
 
 app.use(
