@@ -17,7 +17,6 @@ const setHttpOnlyCookie = (res, name, value, expiration, Path) => {
       httpOnly: true,
       sameSite: "None",
       expires: expiration,
-      domain: "yasalee-qa.com",
     };
 
     res.cookie(name, value, options);
