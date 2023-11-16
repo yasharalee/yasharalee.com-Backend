@@ -7,7 +7,6 @@ const {
   verifyUserName,
 } = require("../middlewares/TokenVerificationMiddlware");
 
-router.post("/createMessage", verifyToken, verifyUserName ,ContactActions.createMessage);
 router.post("/createPost", verifyToken, verifyRole(process.env.role), ContactActions.createPost);
 router.get("/getPosts", ContactActions.getPosts);
 router.get("/getPost/:id", verifyToken, ContactActions.getPost);

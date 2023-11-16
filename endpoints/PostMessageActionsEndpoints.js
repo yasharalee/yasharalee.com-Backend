@@ -389,7 +389,6 @@ const deletePost = async (req, res) => {
     console.error(err);
     res.status(500).json({
       success: false,
-      err,
       message:
         "An error occurred while retrieving the posts. Please try again later.",
     });

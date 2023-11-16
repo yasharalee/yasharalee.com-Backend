@@ -22,7 +22,6 @@ const sesClient = new SESClient({ region: 'us-east-2' });
 
 
 const allowedOrigins = [
-  ,
   "https://yasalee-qa.com",
   "https://localhost:3000"
 ];
@@ -31,7 +30,12 @@ app.use(
   cors({
     origin: allowedOrigins,
     credentials: true,
-    allowedHeaders: ["content-type", "Authorization", "getUser"],
+    allowedHeaders: [
+      "content-type",
+      "Authorization",
+      "getUser",
+      "Allow-Credentials",
+    ],
   })
 );
 
