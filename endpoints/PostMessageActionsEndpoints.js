@@ -43,8 +43,29 @@ const getNewMesages = async (req, res) => {
       },
     ]);
 
-    if (usersWithUnreadMessages.length > 0) {
-      res.status(200).json({ data: usersWithUnreadMessages, err:null });
+
+    const contactsWithUnreadMessages = await Contact.aggregate([
+      {
+        $match: {
+          read: false,
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+          fullName: 1,
+          unreadMessagesCount: { $literal: 1 },
+        },
+      },
+    ]);
+
+    const combinedResults = [
+      ...usersWithUnreadMessages,
+      ...contactsWithUnreadMessages,
+    ];
+
+    if (combinedResults.length > 0) {
+      res.status(200).json({ data: combinedResults, err: null });
     } else {
       res.status(404).json({ err: "No unread messages found" });
     }
