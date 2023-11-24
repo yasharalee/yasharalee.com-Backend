@@ -24,7 +24,7 @@ function sendEmail(recipient, subject, message) {
                 Data: subject,
             },
         },
-        Source: 'yasharalee@hotmail.com',
+        Source: 'info@yasalee-qa.com',
     };
 
     ses.sendEmail(params, (err, data) => {
