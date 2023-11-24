@@ -17,10 +17,10 @@ const contactMessageSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
-    targetId: {
+    messageReceiverId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      default: null
+      default: null,
     },
     fullName: {
       type: String,
@@ -32,7 +32,7 @@ const contactMessageSchema = new mongoose.Schema(
       trim: true,
       default: "",
     },
-    email: {
+    normalizedEmail: {
       type: String,
       trim: true,
     },
@@ -50,6 +50,11 @@ const contactMessageSchema = new mongoose.Schema(
       type: [String],
       enum: ["email", "phone"],
       default: ["email"],
+    },
+    anonymous: {
+      type: Boolean,
+      default: false,
+      immutable: true
     },
     message: {
       type: String,

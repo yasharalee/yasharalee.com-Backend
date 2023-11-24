@@ -66,15 +66,12 @@ const justAddUserIfAny = async (req, res, next) => {
 
       const user = await User.findById(userId);
 
-      if (!user) {
+        if (user) {
+          req.user = user;
+          req.token = token;
+        }
+
         next();
-        return res.status(404).json({ err: "User not found" });
-      }
-
-      req.user = user;
-      req.token = token;
-
-      next();
     } catch (err) {
       console.error(err);
       return res.status(500).json({ err: "Server Error. Please retry later" });

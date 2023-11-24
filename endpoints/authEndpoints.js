@@ -17,7 +17,6 @@ const isSignedin = (req, res, next) => {
     if (req.user) {
       if (getUser) {
         const userToSend = {
-          _id:req.user._id,
           fullName: req.user.fullName,
           normalizedEmail: req.user.normalizedEmail,
           messageingThread: req.user.messageingThread,
@@ -79,11 +78,6 @@ const googleCallback = (req, res, next) => {
     }
 
     await user.save();
-
-    // const recipientEmail =  user.normalizedEmail;
-    // const subject = "Signed in";
-    // const messageBody = `Dear ${user.fullName} \n This Email has been sent to let you know that your account has been logged in.\n\n https://yasharalee.com \n\n IP: ${user.loginHistory[user.loginHistory.length - 1].ipAddress} \n At: ${user.loginHistory[user.loginHistory.length - 1].timestamp}`;
-    // mailit.sendEmail(recipientEmail, subject, messageBody);
 
     res.redirect(process.env.UI_Env + "/redirect/" + token);
   })(req, res, next);

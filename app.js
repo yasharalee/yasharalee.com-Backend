@@ -9,7 +9,8 @@ const passportSetup = require('./utils/passStrategies');
 const passport = require('passport');
 const { SESClient, SendEmailCommand } = require("@aws-sdk/client-ses");
 const RequestIp = require("./models/RequesterIPSchema");
-const PostContact = require("./routes/PostContactRoutes");
+
+const PostContact = require("./routes/ContactRoutes");
 const authRouter = require("./routes/authRouter");
 const UserRouter = require('./routes/userRouter');
 const postRouter = require('./routes/postRoute');
@@ -22,16 +23,26 @@ const sesClient = new SESClient({ region: 'us-east-2' });
 
 
 const allowedOrigins = [
-  ,
   "https://yasharalee.com",
-  "https://localhost:3000"
 ];
 
 app.use(
   cors({
-    origin: allowedOrigins,
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
-    allowedHeaders: ["content-type", "Authorization", "getUser"],
+    allowedHeaders: [
+      "Content-Type",
+      "Authorization",
+      "getUser",
+      "Allow-Credentials",
+    ],
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   })
 );
 
