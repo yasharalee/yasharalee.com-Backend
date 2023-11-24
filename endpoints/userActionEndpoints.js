@@ -15,7 +15,7 @@ const getUserById = async (req, res) => {
       if (contact) {
         const messageThreadItem = {
           author: contact._id,
-          targetId: null,
+          messageReceiverId: null,
           _id: contact._id,
           fullName: contact.fullName,
           companyName: contact.companyName,

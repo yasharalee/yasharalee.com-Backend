@@ -2,6 +2,7 @@ const Contact = require("../models/ContactSchema");
 const User = require("../models/User");
 const Post = require("../models/postSchema");
 const { verifyAccountOwnerShip } = require("../middlewares/Authorize");
+const mailing = require("../utils/emailUtils");
 
 const getNewMesages = async (req, res) => {
   try {
@@ -43,7 +44,6 @@ const getNewMesages = async (req, res) => {
       },
     ]);
 
-
     const contactsWithUnreadMessages = await Contact.aggregate([
       {
         $match: {
@@ -75,38 +75,48 @@ const getNewMesages = async (req, res) => {
   }
 };
 
-
 const createAdminMessage = async (req, res) => {
   try {
     if (req.user) {
       const user = req.user;
 
-      console.log(req.body);
-
       const newMessage = {
         author: user._id,
-        targetId: req.body.targetId.toString(),
+        messageReceiverId: req.body.messageReceiverId,
         fullName: req.body.fullName,
         companyName: req.body.companyName,
-        email: req.body.email,
+        normalizedEmail: req.body.normalizedEmail,
         phoneNumber: req.body.phoneNumber,
         links: req.body.links,
         preferredContactMethods: req.body.preferredContactMethods,
         message: req.body.message,
       };
 
-      let targetUser = await User.findOne({_id: req.body.targetId});
+      let targetUser;
+      console.log("Anonymous:", req.body);
+      const tempUser = await User.findOne({ _id: req.body.messageReceiverId });
+      const tempAnony = await Contact.findOne({ _id: req.body.messageReceiverId });
 
-      targetUser.messageingThread.push(newMessage);
+      if (tempUser) {
+        targetUser = tempUser;
 
-      await targetUser.save();
-     
+        targetUser.messageingThread.push(newMessage);
 
-      return res.status(201).json({
-        success: true,
-        newMessage: targetUser,
-        err: "Created under users message thread",
-      });
+        await targetUser.save();
+
+        return res.status(201).json({
+          success: true,
+          newMessage: targetUser,
+          err: "Created under users message thread",
+        });
+      } else if (tempAnony) {
+        targetUser = tempAnony;
+        mailing.sendEmail(
+          targetUser.normalizedEmail,
+          "Re - " + targetUser.message.substring(0, 15),
+          req.body.message
+        );
+      }
     } else {
       return res.status(400).json({
         success: false,
@@ -122,14 +132,6 @@ const createAdminMessage = async (req, res) => {
   }
 };
 
-
-
-
-
-
-
-
-
 const createMessage = async (req, res) => {
   try {
     if (req.user && req.userNameVerified === true) {
@@ -139,7 +141,7 @@ const createMessage = async (req, res) => {
         author: req.user._id,
         fullName: req.body.fullName,
         companyName: req.body.companyName,
-        email: req.body.email,
+        normalizedEmail: req.body.normalizedEmail,
         phoneNumber: req.body.phoneNumber,
         links: req.body.links,
         preferredContactMethods: req.body.preferredContactMethods,
@@ -150,27 +152,22 @@ const createMessage = async (req, res) => {
 
       await user.save();
 
-     return res
-       .status(201)
-       .json({
-         success: true,
-         newMessage,
-         err: "Thank you for your time, I will be in touch shortly",
-       });
+      return res.status(201).json({
+        success: true,
+        newMessage,
+        err: "Thank you for your time, I will be in touch shortly",
+      });
     } else {
-      return res
-        .status(400)
-        .json({
-          success: false,
-          err: "User Name in form is defferent than records",
-        });
+      return res.status(400).json({
+        success: false,
+        err: "User Name in form is defferent than records",
+      });
     }
   } catch (err) {
     console.error(err);
     return res.status(500).json({
       success: false,
-      err:
-        "An error occurred while creating the contact. Please try again later.",
+      err: "An error occurred while creating the contact. Please try again later.",
     });
   }
 };
@@ -180,7 +177,7 @@ const createAnonymousMessage = async (req, res) => {
     const {
       fullName,
       companyName,
-      email,
+      normalizedEmail,
       phoneNumber,
       links,
       preferredContactMethods,
@@ -190,7 +187,7 @@ const createAnonymousMessage = async (req, res) => {
     const newContact = new Contact({
       fullName,
       companyName,
-      email,
+      normalizedEmail,
       phoneNumber,
       links,
       preferredContactMethods,
@@ -198,7 +195,7 @@ const createAnonymousMessage = async (req, res) => {
     });
 
     const theMessage = await newContact.save();
-    
+
     if (theMessage) {
       console.log(theMessage);
       return res.status(201).json({

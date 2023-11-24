@@ -12,7 +12,7 @@ const contactSchema = new mongoose.Schema(
       trim: true,
       default: "",
     },
-    email: {
+    normalizedEmail: {
       type: String,
       trim: true,
     },
@@ -30,6 +30,11 @@ const contactSchema = new mongoose.Schema(
       type: [String],
       enum: ["email", "phone"],
       default: ["email"],
+    },
+    anonymous: {
+      type: Boolean,
+      default: true,
+      immutable: true,
     },
     message: {
       type: String,
