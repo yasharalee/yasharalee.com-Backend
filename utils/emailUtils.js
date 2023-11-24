@@ -2,7 +2,7 @@ const {
     SES
 } = require("@aws-sdk/client-ses");
 
-const ses = new SES({ region: 'us-east-2', apiVersion: '2010-12-01' });
+const ses = new SES({ region: 'us-east-1', apiVersion: '2010-12-01' });
 
 
 function sendEmail(from ,recipient, subject, message) {
