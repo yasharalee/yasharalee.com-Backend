@@ -14,6 +14,7 @@ const PostContact = require("./routes/ContactRoutes");
 const authRouter = require("./routes/authRouter");
 const UserRouter = require('./routes/userRouter');
 const postRouter = require('./routes/postRoute');
+const reCaptchaRouter = require('./endpoints/reCaptchaEndpoint');
 var indexRouter = require('./routes/index');
 const { verifyToken } = require('./middlewares/TokenVerificationMiddlware');
 
@@ -108,6 +109,7 @@ app.use('/auth', authRouter);
 app.use('/Messages', PostContact);
 app.use("/client", UserRouter);
 app.use("/posts", postRouter);
+app.use("/captcha", reCaptchaRouter);
 
 
 app.use(function (req, res, next) {
