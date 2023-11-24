@@ -200,9 +200,9 @@ const createAnonymousMessage = async (req, res) => {
 
     if (theMessage) {
       mailing.sendEmail(
-        "New anonymous message received",
+        "new-message",
         "yashaalee@gmail.com",
-        `received a new message from ${fullName}`,
+        `new anonymous message from ${fullName}`,
         message
       );
       return res.status(201).json({
