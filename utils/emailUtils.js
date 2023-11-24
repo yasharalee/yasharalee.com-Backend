@@ -31,9 +31,8 @@ function sendEmail(from ,recipient, subject, message) {
         if (err) {
             console.error('Error sending email:', err);
         } else {
-            console.log('Email sent successfully:', data);
+            console.log('Email sent successfully:');
         }
-        console.log(params);
     });
 }
 
