@@ -5,7 +5,7 @@ const {
 const ses = new SES({ region: 'us-east-2', apiVersion: '2010-12-01' });
 
 
-function sendEmail(recipient, subject, message) {
+function sendEmail(from ,recipient, subject, message) {
 
 
     const params = {
@@ -24,7 +24,7 @@ function sendEmail(recipient, subject, message) {
                 Data: subject,
             },
         },
-        Source: 'info@yasalee-qa.com',
+        Source: from+'@yasalee-qa.com',
     };
 
     ses.sendEmail(params, (err, data) => {

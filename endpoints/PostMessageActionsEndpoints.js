@@ -93,9 +93,10 @@ const createAdminMessage = async (req, res) => {
       };
 
       let targetUser;
-      console.log("Anonymous:", req.body);
       const tempUser = await User.findOne({ _id: req.body.messageReceiverId });
-      const tempAnony = await Contact.findOne({ _id: req.body.messageReceiverId });
+      const tempAnony = await Contact.findOne({
+        _id: req.body.messageReceiverId,
+      });
 
       if (tempUser) {
         targetUser = tempUser;
@@ -112,8 +113,9 @@ const createAdminMessage = async (req, res) => {
       } else if (tempAnony) {
         targetUser = tempAnony;
         mailing.sendEmail(
+          "Info",
           targetUser.normalizedEmail,
-          "Re - " + targetUser.message.substring(0, 15),
+          `Reply: ${targetUser.message.substring(0, 15)}...`,
           req.body.message
         );
       }
@@ -197,7 +199,12 @@ const createAnonymousMessage = async (req, res) => {
     const theMessage = await newContact.save();
 
     if (theMessage) {
-      console.log(theMessage);
+      mailing.sendEmail(
+        "NewMessage",
+        "yashaalee@gmail.com",
+        `received a new message from ${fullName}`,
+        message
+      );
       return res.status(201).json({
         success: true,
         newMessage: newContact,
