@@ -9,27 +9,30 @@ router.post("/verify-recaptcha", async (req, res) => {
   }
 
   try {
-    const googleVerifyUrl = `https://www.google.com/recaptcha/api/siteverify`;
-    const response = await axios.post(googleVerifyUrl, null, {
-      params: {
-        secret: process.env.RECAPTCHA_SECRET_KEY,
-        response: token,
-      },
-    });
+    const response = await axios.post(
+      "https://www.google.com/recaptcha/api/siteverify",
+      null,
+      {
+        params: {
+          secret: process.env.RECAPTCHA_SECRET_KEY,
+          response: token,
+        },
+      }
+    );
 
     const data = response.data;
     if (!data.success) {
       return res
         .status(401)
-        .json({ message: "Failed reCAPTCHA verification.", data });
+        .json({ message: "Failed reCAPTCHA v3 verification.", data });
     }
 
-  
-    res.json({ message: "reCAPTCHA verified successfully.", data });
+    return res.json({ message: "reCAPTCHA v3 verified successfully.", data });
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Error verifying reCAPTCHA.", error: error.toString() });
+    return res.status(500).json({
+      message: "Error verifying reCAPTCHA v3.",
+      error: error.toString(),
+    });
   }
 });
 
