@@ -23,10 +23,7 @@ var app = express();
 const sesClient = new SESClient({ region: 'us-east-2' });
 
 
-const allowedOrigins = [
-  "https://yasalee-qa.com",
-  "localhost:3000"
-];
+const allowedOrigins = ["https://yasalee-qa.com", "https://localhost:3000"];
 
 app.use(
   cors({

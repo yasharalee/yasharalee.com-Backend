@@ -1,7 +1,7 @@
 const { SecretsManager } = require("@aws-sdk/client-secrets-manager");
 
 const initializeEnvVars = async (key) => {
-  const region = "us-east-2";
+  const region = process.env.Region;
 
   const client = new SecretsManager({
     region: region,
