@@ -3,8 +3,6 @@ info:
   title: yaslanding.com
   version: "1.0"
   description: API to work with yaslanding.com.
-servers:
-  - url: "https://localhost:443"
 security:
   - BearerAuth: []
 tags:

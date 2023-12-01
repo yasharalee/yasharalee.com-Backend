@@ -3,8 +3,6 @@ info:
   title: Contact and Messaging API
   version: "1.0"
   description: API for handling the posts.
-servers:
-  - url: "https://localhost:443"
 security:
   - BearerAuth: []
 tags:

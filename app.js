@@ -16,10 +16,9 @@ const UserRouter = require("./routes/userRouter");
 const postRouter = require("./routes/postRoute");
 const reCaptchaRouter = require("./endpoints/reCaptchaEndpoint");
 var indexRouter = require("./routes/index");
-const { verifyToken } = require("./middlewares/TokenVerificationMiddlware");
 const swaggerUi = require("swagger-ui-express");
 const swaggerSpec = require("./swaggerDef");
-const basicAuth = require("express-basic-auth");
+const {basicAuthorizer} = require("./middlewares/Authorize");
 
 var app = express();
 
@@ -29,7 +28,7 @@ const sesClient = new SESClient({ region: "us-east-2" });
 
 const allowedOrigins = [
   process.env.UI_Env,
-  "https://localhost",
+  process.env.SWAGGER_CORS_ENV,
 ];
 
 app.use(
@@ -54,19 +53,7 @@ app.use(
   })
 );
 
-const myAuthorizer = (username, password) => {
-  const userMatches = basicAuth.safeCompare(username, process.env.BASIC_AUTH_USERNAME);
-  const passwordMatches = basicAuth.safeCompare(password, process.env.BASIC_AUTH_PASSWORD);
-  return userMatches & passwordMatches;
-};
-
-const basicAuthMiddleware = basicAuth({
-  authorizer: myAuthorizer,
-  challenge: true,
-  realm: "Swagger",
-});
-
-app.use("/swagger",basicAuthMiddleware, swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.use("/swagger",basicAuthorizer, swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.use(async (req, res, next) => {
   const clientIp =
