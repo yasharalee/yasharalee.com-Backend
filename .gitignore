@@ -2,3 +2,6 @@ node_modules/
 .env
 *.pem
 server-local.js
+*.crt
+*.key
+npm-debug*.*
