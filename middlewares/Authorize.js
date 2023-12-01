@@ -8,7 +8,7 @@ const verifyRole = (role) => {
             if (req.user && req.user.role.includes(role)) {
                 next();
             } else {
-                return res.status(403).send('You are unauthorised to perform this action');
+                return res.status(403).send({err:'You are unauthorised to perform this action'});
             }
         } catch (err) {
             console.log(err);

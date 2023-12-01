@@ -232,36 +232,6 @@ const createAnonymousMessage = async (req, res) => {
   }
 };
 
-const getMessages = async (req, res) => {
-  try {
-    let messages;
-
-    if (req.body && req.body.last) {
-      const limit = Number(req.body.last);
-      messages = await Contact.find()
-        .select("_id companyName fullName")
-        .sort({ createdAt: -1 })
-        .limit(limit);
-    } else {
-      messages = await Contact.find().select(
-        "_id companyName fullName message"
-      );
-    }
-
-    res.status(200).json({
-      success: true,
-      data: messages,
-    });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({
-      success: false,
-      message:
-        "An error occurred while retrieving the contacts. Please try again later.",
-    });
-  }
-};
-
 const getMessage = async (req, res) => {
   try {
     const message = await Contact.findById(req.params.id);
@@ -290,154 +260,34 @@ const getMessage = async (req, res) => {
   }
 };
 
-const createPost = async (req, res) => {
+const getMesagesByUser = (req, res) => {
+  const { user } = req;
   try {
-    const { category, title, content } = req.body;
-
-    const newPost = new Post({
-      category,
-      title,
-      content,
-    });
-
-    const obj = await newPost.save();
-
-    if (obj) {
-      return res.status(201).json({
+    if (user) {
+      return res.status(200).json({
         success: true,
-        post: obj,
+        messageingThread: user.messageingThread,
+        err: null,
       });
     } else {
-      return res.status(500).json({
-        success: false,
-      });
+      throw "No User Found";
     }
   } catch (err) {
-    console.error(err);
+    console.log(err);
     return res.status(500).json({
       success: false,
-      err,
-      message:
-        "An error occurred while creating the Post. Please try again later.",
+      MessagingThread: null,
+      err: "Something went wrong, please try again later",
     });
   }
 };
 
-const getPosts = async (req, res) => {
-  try {
-    const posts = await Post.find();
-    if (posts) {
-      return res.status(200).json({
-        data: posts,
-      });
-    } else {
-      return res.status(404).json({
-        success: false,
-      });
-    }
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({
-      success: false,
-      err,
-      message:
-        "An error occurred while retrieving the posts. Please try again later.",
-    });
-  }
-};
-
-const getPost = async (req, res) => {
-  try {
-    const id = req.params.id;
-
-    const post = await Post.find({ _id: id });
-
-    if (post) {
-      return res.status(200).json({
-        data: post,
-      });
-    } else {
-      return res.status(404).json({
-        success: false,
-      });
-    }
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({
-      success: false,
-      err,
-      message:
-        "An error occurred while retrieving the posts. Please try again later.",
-    });
-  }
-};
-
-const editPost = async (req, res) => {
-  try {
-    const { _id, category, title, content } = req.body;
-
-    const updatedValues = { category, title, content };
-
-    const post = await Post.findOneAndUpdate({ _id }, updatedValues, {
-      new: true,
-    });
-
-    if (post) {
-      return res.status(200).json({
-        success: true,
-        post,
-      });
-    } else {
-      return res.status(404).json({
-        success: false,
-      });
-    }
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({
-      success: false,
-      err,
-      message:
-        "An error occurred while retrieving the posts. Please try again later.",
-    });
-  }
-};
-
-const deletePost = async (req, res) => {
-  try {
-    const { id } = req.params;
-
-    const post = await Post.findByIdAndRemove(id);
-
-    if (post) {
-      return res.status(200).json({
-        success: true,
-      });
-    } else {
-      return res.status(404).json({
-        success: false,
-      });
-    }
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({
-      success: false,
-      message:
-        "An error occurred while retrieving the posts. Please try again later.",
-    });
-  }
-};
 
 module.exports = {
-  createPost,
-  getPosts,
-  getPost,
-  editPost,
-  deletePost,
   createMessage,
-  getMessages,
   getMessage,
   getNewMesages,
   createAnonymousMessage,
   createAdminMessage,
+  getMesagesByUser,
 };

@@ -10,7 +10,7 @@ const verifyToken = async(req, res, next) => {
       ? req.headers["authorization"].split(" ")[1]
       : null;
   const token = tokenFromCookie || tokenFromHeader;
-
+  
   if (!token) {
     console.log("No token has been sent along with request");
     return res.status(401).json({ err: "Unable to authenticate" });

@@ -1,0 +1,124 @@
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    MessageRequest:
+      type: object
+      required:
+        - fullName
+        - companyName
+        - normalizedEmail
+        - message
+      properties:
+        fullName:
+          type: string
+        companyName:
+          type: string
+        normalizedEmail:
+          type: string
+          format: email
+        phoneNumber:
+          type: string
+        links:
+          type: string
+        preferredContactMethods:
+          type: array
+          items:
+            type: string
+        message:
+          type: string
+
+    CreateMessageResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+
+        newMessage:
+          $ref: "#/components/schemas/MessageDetails"
+        err:
+          type: string
+    GetNewMessagesResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/UnreadMessageItem"
+        err:
+          type: string
+
+    MessageDetails:
+      type: object
+      properties:
+        author:
+          type: string
+        fullName:
+          type: string
+        companyName:
+          type: string
+        normalizedEmail:
+          type: string
+          format: email
+        phoneNumber:
+          type: string
+        links:
+          type: string
+        preferredContactMethods:
+          type: array
+          items:
+            type: string
+        message:
+          type: string
+
+    UnreadMessageItem:
+      type: object
+      properties:
+        _id:
+          type: string
+        fullName:
+          type: string
+        unreadMessagesCount:
+          type: integer
+
+    ErrorResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        err:
+          type: string
+
+    ErrorResponseNoSuccess:
+      type: object
+      properties:
+        err:
+          type: string
+
+    getMessageByUserResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        messagingThread:
+          type: array
+          items:
+            $ref: "#/components/schemas/MessageDetails"
+        err:
+          type: string
+          example: null
+    messageByUserError:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        messagingThread:
+          type: string
+          example: null
+        err:
+          type: string

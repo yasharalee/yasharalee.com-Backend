@@ -160,29 +160,6 @@ const gooleLogOut = (req, res) => {
   }
 };
 
-const getMesagesByUser = (req, res) => {
-  const { user } = req;
-  try {
-    if (user) {
-      return res.status(200).json({
-        success: true,
-        messageingThread: user.messageingThread,
-        err: null,
-      });
-    } else {
-      throw "No User Found";
-    }
-  } catch (err) {
-    console.log(err);
-    return res
-      .status(500)
-      .json({
-        success: false,
-        MessagingThread: null,
-        err: "Something went wrong, please try again later",
-      });
-  }
-};
 
 module.exports = {
   google,
@@ -194,5 +171,4 @@ module.exports = {
   gooleLogOut,
   isSignedin,
   getPermission,
-  getMesagesByUser,
 };
