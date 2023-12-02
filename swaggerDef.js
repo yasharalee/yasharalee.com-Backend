@@ -14,7 +14,7 @@ const options = {
       },
     ],
   },
-  apis: ["./ymlfiles/*.yml"],
+  apis: ["ymlfiles/*.yml"],
 };
 
 const swaggerSpec = swaggerJsdoc(options);

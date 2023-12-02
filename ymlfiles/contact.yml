@@ -1,6 +1,6 @@
 openapi: "3.0.0"
 info:
-  title: yaslanding.com
+  title: Contact and Messaging API
   version: "1.0"
   description: API to work with yaslanding.com.
 security:

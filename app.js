@@ -18,7 +18,7 @@ const reCaptchaRouter = require("./endpoints/reCaptchaEndpoint");
 var indexRouter = require("./routes/index");
 const swaggerUi = require("swagger-ui-express");
 const swaggerSpec = require("./swaggerDef");
-const {basicAuthorizer} = require("./middlewares/Authorize");
+const { basicAuthorizer } = require("./middlewares/Authorize");
 
 var app = express();
 
@@ -26,17 +26,12 @@ app.set("trust proxy", true);
 
 const sesClient = new SESClient({ region: "us-east-2" });
 
-const allowedOrigins = [
-  process.env.UI_Env,
-  process.env.SWAGGER_CORS_ENV,
-];
+const allowedOrigins = [process.env.UI_Env, process.env.SWAGGER_CORS_ENV];
 
 app.use(
   cors({
     origin: (origin, callback) => {
-    console.log("Origin received:", origin);
       if (!origin || allowedOrigins.includes(origin)) {
-
         callback(null, true);
       } else {
         callback(new Error("Not allowed by CORS"));
@@ -53,7 +48,12 @@ app.use(
   })
 );
 
-app.use("/swagger",basicAuthorizer, swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.use(
+  "/swagger",
+  basicAuthorizer,
+  swaggerUi.serve,
+  swaggerUi.setup(swaggerSpec)
+);
 
 app.use(async (req, res, next) => {
   const clientIp =
