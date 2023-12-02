@@ -14,10 +14,12 @@ const options = {
       },
     ],
   },
-  apis: ["ymlfiles/*.yml"],
+  apis: ["./ymlfiles/*.yml"],
 };
 
 const swaggerSpec = swaggerJsdoc(options);
+
+console.log(JSON.stringify(swaggerSpec, null, 2));
 
 module.exports = swaggerSpec;
 
