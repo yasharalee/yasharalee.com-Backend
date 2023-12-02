@@ -20,6 +20,4 @@ const options = {
 
 const swaggerSpec = swaggerJsdoc(options);
 
-console.log(JSON.stringify(swaggerSpec, null, 2));
-
 module.exports = swaggerSpec;

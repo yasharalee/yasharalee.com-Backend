@@ -10,7 +10,7 @@ const passport = require("passport");
 const { SESClient, SendEmailCommand } = require("@aws-sdk/client-ses");
 const RequestIp = require("./models/RequesterIPSchema");
 
-const PostContact = require("./routes/ContactRoutes");
+const ContactRoute = require("./routes/ContactRoutes");
 const authRouter = require("./routes/authRouter");
 const UserRouter = require("./routes/userRouter");
 const postRouter = require("./routes/postRoute");
@@ -100,7 +100,7 @@ app.get("/auth-cancelled", (req, res) => {
 
 app.use("/", indexRouter);
 app.use("/auth", authRouter);
-app.use("/Messages", PostContact);
+app.use("/Messages", ContactRoute);
 app.use("/client", UserRouter);
 app.use("/posts", postRouter);
 app.use("/captcha", reCaptchaRouter);
