@@ -1,0 +1,42 @@
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    userByIdResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data:
+          type: object
+          properties:
+            _id:
+              type: string
+            googleId:
+              type: string
+            fullName:
+              type: string
+            phoneNumber:
+              type: string
+            normalizedEmail:
+              type: string
+            role:
+              type: string
+            messageingThread:
+              type: array
+              items:
+                $ref: '#/components/schemas/MessageDetails'
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+        __v:
+          type: integer
+    userByIdError:
+      type: object
+      properties:
+        message:
+          type: string
