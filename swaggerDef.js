@@ -1,3 +1,4 @@
+const path = require("path");
 const swaggerJsdoc = require("swagger-jsdoc");
 
 const options = {
@@ -14,7 +15,7 @@ const options = {
       },
     ],
   },
-  apis: ["./ymlfiles/*.yml"],
+  apis: [path.join(__dirname, "ymlfiles", "*.yml")],
 };
 
 const swaggerSpec = swaggerJsdoc(options);
@@ -22,4 +23,3 @@ const swaggerSpec = swaggerJsdoc(options);
 console.log(JSON.stringify(swaggerSpec, null, 2));
 
 module.exports = swaggerSpec;
-
