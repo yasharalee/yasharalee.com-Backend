@@ -1,0 +1,23 @@
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    getATRequest:
+      type: object
+      properties:
+        expiresIn:
+          type: integer
+          description: The time in seconds the token is valid for.
+        scopes:
+          type: array
+          items:
+            type: string
+            description: List of scopes the token grants access to. E.g., ['swagger', 'admin' , 'visitor'].
+    getATResponse:
+      type: object
+      properties:
+        token:
+          type: string

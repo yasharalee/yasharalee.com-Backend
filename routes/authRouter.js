@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const authEndpoints = require("../endpoints/authEndpoints");
+const { verifyRole } = require("../middlewares/Authorize");
 const {
   verifyToken,
   justAddUserIfAny,
@@ -17,5 +18,11 @@ router.get("/outlook/callback", authEndpoints.outlookCallback);
 
 router.get("/getUserData", verifyToken, authEndpoints.getUserData);
 router.get("/getPermission", verifyToken, authEndpoints.getPermission);
+router.post(
+  "/getAT",
+  verifyToken,
+  verifyRole(process.env.role),
+  authEndpoints.getAT
+);
 
 module.exports = router;

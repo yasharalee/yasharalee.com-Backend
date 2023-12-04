@@ -28,7 +28,7 @@ components:
             messageingThread:
               type: array
               items:
-                $ref: '#/components/schemas/MessageDetails'
+                $ref: '#/components/schemas/MessageThreadItem'
         createdAt:
           type: string
         updatedAt:
@@ -39,4 +39,71 @@ components:
       type: object
       properties:
         message:
+          type: string
+
+    getUserDataResponse:
+      type: object
+      properties:
+        User:
+          type: object
+          properties:
+            _id:
+              type: string
+            fullName:
+              type: string
+            phoneNumber:
+              type: string
+            normalizedEmail:
+              type: string
+            role:
+              type: string
+            messageingThread:
+              type: array
+              items:
+                $ref: '#/components/schemas/MessageThreadItem'
+            createdAt:
+              type: string
+            updatedAt:
+              type: string
+            __v:
+              type: integer
+    MessageThreadItem:
+      type: object
+      properties:
+        author:
+          type: string
+        messageReceiverId:
+          type: string
+          nullable: true
+        fullName:
+          type: string
+        companyName:
+          type: string
+        normalizedEmail:
+          type: string
+        phoneNumber:
+          type: string
+        links:
+          type: string
+        preferredContactMethods:
+          type: array
+          items:
+            type: string
+        anonymous:
+          type: boolean
+        message:
+          type: string
+        read:
+          type: boolean
+        _id:
+          type: string
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+
+    err:
+      type: object
+      properties:
+        error:
           type: string

@@ -3,6 +3,8 @@ const passportSetup = require("../utils/passStrategies");
 const passport = require("passport");
 const jwtCookie = require("../utils/tokenUtils");
 const mailit = require("../utils/emailUtils");
+const crypto = require("crypto");
+const AccessCode = require("../models/AccessCodeSchema");
 
 const google = (req, res, next) => {
   passport.authenticate("google", {
@@ -128,6 +130,7 @@ const getUserData = (req, res) => {
       fullName: req.user.fullName,
       role: req.user.role,
     });
+
     jwtCookie.setHttpOnlyCookie(
       res,
       "access-token",
@@ -160,6 +163,24 @@ const gooleLogOut = (req, res) => {
   }
 };
 
+const getAT = async (req, res) => {
+  try {
+    const expiresIn = req.body.expiresIn;
+    const scopes = req.body.scopes;
+    const expiresAt = new Date(Date.now() + expiresIn * 60000);
+    const token = crypto.randomUUID();
+
+    await AccessCode.create({ token, expiresAt, scope: scopes });
+
+    const swaggerUrl = `${process.env.Environment}/swagger-access/?accessCode=${token}`;
+    res.json({ token: swaggerUrl });
+  } catch (error) {
+    console.error("Error generating access token:", error);
+    res.status(500).json({ err: "Internal Server Error" });
+  }
+};
+
+
 
 module.exports = {
   google,
@@ -171,4 +192,5 @@ module.exports = {
   gooleLogOut,
   isSignedin,
   getPermission,
+  getAT,
 };
