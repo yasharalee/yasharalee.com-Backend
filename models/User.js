@@ -48,7 +48,7 @@ const contactMessageSchema = new mongoose.Schema(
     },
     preferredContactMethods: {
       type: [String],
-      enum: ["email", "phone"],
+      enum: ["email", "phone","contact page"],
       default: ["email"],
     },
     anonymous: {

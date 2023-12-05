@@ -48,3 +48,36 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/userByIdError'
+  /auth/getUserData:
+    get:
+      tags:
+        - Users
+      summary: Get the messagesingThraed of the user
+      security:
+        - BearerAuth: []
+      description: used in dashContact to retrive the messagingThread of sender.
+      responses:
+        "200":
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/getUserDataResponse'
+        "404":
+          description: Contact not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/err'
+        "403":
+          description: Unauthorized to view this contact
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/err'
+        "500":
+          description: Server error - An error occurred.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/err'

@@ -9,6 +9,7 @@ const passportSetup = require("./utils/passStrategies");
 const passport = require("passport");
 const { SESClient, SendEmailCommand } = require("@aws-sdk/client-ses");
 const RequestIp = require("./models/RequesterIPSchema");
+const { swaggerCreds, isAuthenticated } = require("./middlewares/Authorize");
 
 const ContactRoute = require("./routes/ContactRoutes");
 const authRouter = require("./routes/authRouter");
@@ -18,7 +19,6 @@ const reCaptchaRouter = require("./endpoints/reCaptchaEndpoint");
 var indexRouter = require("./routes/index");
 const swaggerUi = require("swagger-ui-express");
 const swaggerSpec = require("./swaggerDef");
-const { basicAuthorizer } = require("./middlewares/Authorize");
 
 var app = express();
 
@@ -46,13 +46,6 @@ app.use(
     ],
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   })
-);
-
-app.use(
-  "/swagger",
-  basicAuthorizer,
-  swaggerUi.serve,
-  swaggerUi.setup(swaggerSpec)
 );
 
 app.use(async (req, res, next) => {
@@ -86,9 +79,29 @@ app.set("view engine", "jade");
 app.use(passport.initialize());
 app.use(logger("dev"));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
+
+
+app.get("/swagger-access", (req, res) => {
+  res.sendFile(path.join(__dirname, "public/Auth.html"));
+});
+
+app.post("/verify-swagger-access", swaggerCreds, (req, res) => {
+  if (req.isAuthenticated) {
+    res.redirect("/swagger");
+  } else {
+    res.status(401).send("Unauthorized");
+  }
+});
+
+app.use(
+  "/swagger",
+  isAuthenticated,
+  swaggerUi.serve,
+  swaggerUi.setup(swaggerSpec)
+);
 
 app.get("/auth-cancelled", (req, res) => {
   try {

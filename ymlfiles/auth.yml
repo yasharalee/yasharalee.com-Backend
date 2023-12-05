@@ -1,0 +1,44 @@
+openapi: "3.0.0"
+info:
+  title: Contact and Messaging API
+  version: "1.0"
+  description: API to work with yaslanding.com.
+security:
+  - BearerAuth: []
+tags:
+  - name: Auth
+
+paths:
+  /auth/getAT:
+    post:
+      tags:
+        - Auth
+      summary: Get access code
+      security:
+        - BearerAuth: []
+      description: Endpoint to create and return access code.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/getATRequest"
+      responses:
+        "201":
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/getATResponse"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseNoSuccess"
+        "500":
+          description: Server error - An error occurred.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseNoSuccess"

@@ -2,6 +2,16 @@ const path = require("path");
 const swaggerJsdoc = require("swagger-jsdoc");
 
 const options = {
+  swaggerOptions: {
+    host: process.env.Environment,
+    securityDefinitions: {
+      Bearer: {
+        type: "http",
+        scheme: "bearer",
+        bearerFormat: "JWT",
+      },
+    },
+  },
   definition: {
     openapi: "3.0.0",
     info: {
@@ -11,10 +21,12 @@ const options = {
     },
     servers: [
       {
-        url: process.env.Environment,
+        url: `${process.env.Environment}`,
+        name: "Spec",
       },
     ],
   },
+
   apis: [path.join(__dirname, "ymlfiles", "*.yml")],
 };
 
