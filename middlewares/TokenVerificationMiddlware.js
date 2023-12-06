@@ -1,84 +1,80 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
-const {getSecret} = require('../utils/secretsUtil');
+const { promisify } = require("util");
+const jwtVerify = promisify(jwt.verify);
+const {getSecret} = require("../utils/secretsUtil");
 
-const verifyToken = async(req, res, next) => {
+const verifyToken = async (req, res, next) => {
+  try {
+    const JWT_Secret = await getSecret("JWT_SECRET");
+    const tokenFromCookie = req.cookies ? req.cookies["access-token"] : null;
+    const tokenFromHeader =
+      req.headers && req.headers["authorization"]
+        ? req.headers["authorization"].split(" ")[1]
+        : null;
+    const token = tokenFromHeader || tokenFromCookie;
 
- const JWT_Secret = process.env.JWT_SECRET;
-  const tokenFromCookie = req.cookies ? req.cookies["access-token"] : null;
-  const tokenFromHeader =
-    req.headers && req.headers["authorization"]
-      ? req.headers["authorization"].split(" ")[1]
-      : null;
-  const token = tokenFromHeader || tokenFromCookie;
-
-  
-  if (!token) {
-    console.log("No token has been sent along with request");
-    return res.status(401).json({ err: "Unable to authenticate" });
-  }
-
-  jwt.verify(token, JWT_Secret, async (err, decodedToken) => {
-    if (err) {
-      console.log("Token is wrong");
-      return res.status(401).json({ err: "Unauthorized user" });
-    }
-
-    try {
-      const userId = decodedToken.userId || decodedToken.payload.userId;
-
-      const user = await User.findById(userId);
-
-      if (!user) {
-        return res.status(404).json({ err: "User not found" });
-      }
-
-      req.user = user;
-      req.token = token;
-
-      next();
-    } catch (err) {
-      console.error(err);
-      return res.status(500).json({ err: "Server Error. Please retry later" });
-    }
-  });
-};
-
-const justAddUserIfAny = (req, res, next) => {
-  const JWT_Secret = process.env.JWT_SECRET;
-  const tokenFromCookie = req.cookies ? req.cookies["access-token"] : null;
-  const tokenFromHeader =
-    req.headers && req.headers["authorization"]
-      ? req.headers["authorization"].split(" ")[1]
-      : null;
-  const token = tokenFromCookie || tokenFromHeader;
-
-  if (!token) {
-    next();
-    return;
-  }
-
-  jwt.verify(token, JWT_Secret, async (err, decodedToken) => {
-    if (err) {
+    if (!token) {
+      console.log("No token has been sent along with request");
       return res.status(401).json({ err: "Unable to authenticate" });
     }
 
-    try {
-      const userId = decodedToken.userId || decodedToken.payload.userId;
+    const decodedToken = await jwtVerify(token, JWT_Secret);
 
-      const user = await User.findById(userId);
+    const userId = decodedToken.userId || decodedToken.payload.userId;
+    const user = await User.findById(userId);
 
-        if (user) {
-          req.user = user;
-          req.token = token;
-        }
-
-        next();
-    } catch (err) {
-      console.error(err);
-      return res.status(500).json({ err: "Server Error. Please retry later" });
+    if (!user) {
+      return res.status(404).json({ err: "User not found" });
     }
-  });
+
+    req.user = user;
+    req.token = token;
+    next();
+  } catch (err) {
+    console.error(err);
+    if (err.name === "JsonWebTokenError") {
+      console.log("Token is wrong");
+      return res.status(401).json({ err: "Unauthorized user" });
+    }
+    return res.status(500).json({ err: "Server Error. Please retry later" });
+  }
+};
+
+
+const justAddUserIfAny = async (req, res, next) => {
+  try {
+    const JWT_Secret = await getSecret("JWT_SECRET");
+    const tokenFromCookie = req.cookies ? req.cookies["access-token"] : null;
+    const tokenFromHeader =
+      req.headers && req.headers["authorization"]
+        ? req.headers["authorization"].split(" ")[1]
+        : null;
+    const token = tokenFromCookie || tokenFromHeader;
+
+    if (!token) {
+      next();
+      return;
+    }
+
+    const decodedToken = await jwtVerify(token, JWT_Secret);
+
+    const userId = decodedToken.userId || decodedToken.payload.userId;
+    const user = await User.findById(userId);
+
+    if (user) {
+      req.user = user;
+      req.token = token;
+    }
+
+    next();
+  } catch (err) {
+    console.error(err);
+    if (err.name === "JsonWebTokenError") {
+      return res.status(401).json({ err: "Unable to authenticate" });
+    }
+    return res.status(500).json({ err: "Server Error. Please retry later" });
+  }
 };
 
 const verifyUserName = (req, res, next) => {

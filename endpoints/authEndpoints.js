@@ -14,7 +14,7 @@ const google = (req, res, next) => {
   })(req, res, next);
 };
 
-const isSignedin = (req, res, next) => {
+const isSignedin = async (req, res, next) => {
   const getUser = req.headers["getuser"];
   try {
     if (req.user) {
@@ -117,7 +117,7 @@ const outlookCallback = (req, res, next) => {
   })(req, res, next);
 };
 
-const getUserData = (req, res) => {
+const getUserData = async (req, res) => {
   try {
     const user = { ...req.user._doc };
     delete user.password;
@@ -126,7 +126,7 @@ const getUserData = (req, res) => {
     delete user.googleId;
     delete user.outlookId;
 
-    const token = jwtCookie.generateToken({
+    const token = await jwtCookie.generateToken({
       userId: req.user._id,
       fullName: req.user.fullName,
       role: req.user.role,

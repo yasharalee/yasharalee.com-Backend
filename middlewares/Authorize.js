@@ -1,10 +1,11 @@
 const jwt = require("jsonwebtoken");
 const mongoose = require("mongoose");
-const basicAuth = require("basic-auth");
 const { getSecret } = require("../utils/secretsUtil");
 const crypto = require("crypto");
 const AccessCode = require("../models/AccessCodeSchema");
 const jwtCookie = require("../utils/tokenUtils");
+const { promisify } = require("util");
+const jwtVerify = promisify(jwt.verify);
 
 const verifyRole = (role) => {
   return function (req, res, next) {
@@ -118,50 +119,45 @@ const swaggerCreds = async (req, res, next) => {
   return res.status(400).send("Credentials or access code required");
 };
 
-const isAuthenticated = (req, res, next) => {
-  const tokenFromCookie = req.cookies ? req.cookies["access-token"] : null;
 
-   if (!tokenFromCookie) {
-     return res.redirect("/swagger-access");
-   }
-  jwt.verify(
-    tokenFromCookie,
-    process.env.JWT_SECRET,
-    async (err, decodedToken) => {
-      if (err) {
-        console.log("Token is wrong");
-        return res.status(401).json({ err: "Unauthorized user" });
-      }
 
-      try {
-        const access = decodedToken.payload.accessCode;
-        const creds = decodedToken.payload.username;
+const isAuthenticated = async (req, res, next) => {
+  try {
+    const secret = await getSecret("JWT_SECRET");
+    const tokenFromCookie = req.cookies ? req.cookies["access-token"] : null;
 
-        if (access !== undefined) {
-          const verified = checkAccessCode(access);
-          if (verified) {
-            next();
-          }
-        } else if (creds !== undefined) {
-          const verified = verifyCredentials(
-            decodedToken.payload.username,
-            decodedToken.payload.password
-          );
-          if (verified) {
-            next();
-          }
-        } else {
-          throw new Error("No Access Code and No Credentials");
-        }
-      } catch (err) {
-        console.error(err);
-        return res
-          .status(500)
-          .json({ err: "Server Error. Please retry later" });
-      }
+    if (!tokenFromCookie) {
+      return res.redirect("/swagger-access");
     }
-  );
+
+    const decodedToken = await jwtVerify(tokenFromCookie, secret);
+    const access = decodedToken.payload.accessCode;
+    const creds = decodedToken.payload.username;
+
+    if (access !== undefined) {
+      const verified = checkAccessCode(access);
+      if (verified) {
+        next();
+        return;
+      }
+    } else if (creds !== undefined) {
+      const verified = verifyCredentials(creds, decodedToken.payload.password);
+      if (verified) {
+        next();
+        return;
+      }
+    } else {
+      throw new Error("No Access Code and No Credentials");
+    }
+  } catch (err) {
+    console.error(err);
+    if (err.name === "JsonWebTokenError") {
+      return res.status(401).json({ err: "Unauthorized user" });
+    }
+    return res.status(500).json({ err: "Server Error. Please retry later" });
+  }
 };
+
 
 module.exports = {
   verifyRole,
