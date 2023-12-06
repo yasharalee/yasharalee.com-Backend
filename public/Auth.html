@@ -61,7 +61,6 @@
         margin: 20px 0;
       }
 
-      
       .separator:before,
       .separator:after {
         content: "";
@@ -137,15 +136,34 @@
             body: formData,
             credentials: "include",
           })
-            .then((response) => response.json())
+            .then((response) => {
+              if (response.status === 403) {
+                throw new Error("Access denied (Forbidden)");
+              }
+              return response.json();
+            })
+
             .then((data) => {
-              if (!data.success) {
-                alert("Authentication failed html");
+              if (!data) {
+                throw new Error("Something went wrong, please try later");
+                return;
+              } else if (!data.success) {
+                throw new Error("Authentication failed");
               } else {
                 window.location.href = "/swagger";
               }
             })
-            .catch((error) => console.error("Error:", error));
+            .catch((error) => {
+              if (
+                error.message.includes("Forbidden") ||
+                error.message.includes("went wrong") ||
+                error.message.includes("Authentication")
+              ) {
+                alert(error.message);
+              }
+
+              console.error("Error:", error);
+            });
         });
 
       window.onload = function () {
