@@ -8,9 +8,6 @@ components:
     getATRequest:
       type: object
       properties:
-        expiresIn:
-          type: integer
-          description: The time in seconds the token is valid for.
         scopes:
           type: array
           items:

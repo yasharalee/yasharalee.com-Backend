@@ -165,12 +165,10 @@ const gooleLogOut = (req, res) => {
 
 const getAT = async (req, res) => {
   try {
-    const expiresIn = req.body.expiresIn;
     const scopes = req.body.scopes;
-    const expiresAt = new Date(Date.now() + expiresIn * 60000);
     const token = crypto.randomUUID();
 
-    await AccessCode.create({ AC: token, expiresAt, scope: scopes });
+    await AccessCode.create({ AC: token, scope: scopes });
 
     const swaggerUrl = `${process.env.Environment}/swagger-access/?accessCode=${token}`;
     res.json({ token: swaggerUrl });

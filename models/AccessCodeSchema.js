@@ -6,10 +6,6 @@ const AccessCodeSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    expiresAt: {
-      type: Date,
-      required: true,
-    },
     scope: {
       type: [String],
       required: true,
