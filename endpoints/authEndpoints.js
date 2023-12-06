@@ -170,7 +170,7 @@ const getAT = async (req, res) => {
     const expiresAt = new Date(Date.now() + expiresIn * 60000);
     const token = crypto.randomUUID();
 
-    await AccessCode.create({ token, expiresAt, scope: scopes });
+    await AccessCode.create({ AC: token, expiresAt, scope: scopes });
 
     const swaggerUrl = `${process.env.Environment}/swagger-access/?accessCode=${token}`;
     res.json({ token: swaggerUrl });
@@ -179,8 +179,6 @@ const getAT = async (req, res) => {
     res.status(500).json({ err: "Internal Server Error" });
   }
 };
-
-
 
 module.exports = {
   google,

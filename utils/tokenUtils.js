@@ -1,9 +1,12 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
+const { getSecret } = require("./secretsUtil");
 
 
-const generateToken = (payload) => {
-    return jwt.sign({ payload }, process.env.JWT_SECRET, {
+const generateToken = async (payload) => {
+    const secret = await getSecret("JWT_SECRET");
+
+    return jwt.sign({ payload }, secret, {
         expiresIn: "3h",
     });
 };

@@ -45,13 +45,13 @@ const safeCompare = (a, b) => {
   return crypto.timingSafeEqual(bufferA, bufferB);
 };
 
+async function checkAccessCode(accessCode, requiredScope) {
 
-async function checkAccessCode(code, requiredScope) {
   try {
-    const accessToken = await AccessCode.findOne({ token: code });
+    const accessToken = await AccessCode.findOne({ AC: accessCode });
+
     if (
       accessToken &&
-      accessToken.expiresAt > new Date() &&
       accessToken.scope.includes(requiredScope)
     ) {
       return true;
@@ -67,9 +67,9 @@ async function verifyCredentials(userName, passWord) {
   try {
     const username = await getSecret("BASIC_AUTH_USERNAME");
     const password = await getSecret("BASIC_AUTH_PASSWORD");
-    const userMatches = safeCompare(userName, username);
-    const passwordMatches = safeCompare(passWord, password);
-
+    const userMatches = userName === username;
+    const passwordMatches = passWord === password;
+    
     return userMatches && passwordMatches;
   } catch (error) {
     console.error("Error in verifyCredentials:", error);
@@ -77,39 +77,90 @@ async function verifyCredentials(userName, passWord) {
   }
 }
 
-
 const swaggerCreds = async (req, res, next) => {
   const { username, password, accessCode } = req.body;
 
   if (accessCode) {
     const isValidAccessCode = await checkAccessCode(accessCode, "swagger");
     if (isValidAccessCode) {
-      req.isAuthenticated = true;
-      return next();
+      const token = await jwtCookie.generateToken({ accessCode });
+
+       jwtCookie.setHttpOnlyCookie(
+        res,
+        "access-token",
+        token,
+        new Date(Date.now() + 2 * 60 * 60 * 1000),
+        "/"
+      );
+      return res.status(200).json({ success: true });
     } else {
       return res.status(403).send("Invalid access code");
     }
   } else if (username && password) {
     const isValidCredentials = await verifyCredentials(username, password);
+
     if (isValidCredentials) {
-      req.isAuthenticated = true;
-      return next();
+      const token = await jwtCookie.generateToken({ username, password });
+
+      jwtCookie.setHttpOnlyCookie(
+        res,
+        "access-token",
+        token,
+        new Date(Date.now() + 2 * 60 * 60 * 1000),
+        "/"
+      );
+       return res.status(200).json({success: true});
     } else {
-      return res.status(401).send("Invalid credentials");
+      return res.status(401).send("Invalid credentials 116");
     }
   }
 
   return res.status(400).send("Credentials or access code required");
 };
 
-const isAuthenticated = (req, res, next) => {
-  if (!req.isAuthenticated) {
-    return res.redirect("/swagger-access");
+const isAuthenticated = async (req, res, next) => {
+  const JWT_Secret = await getSecret("JWT_SECRET");
+  const tokenFromCookie = req.cookies ? req.cookies["access-token"] : null;
+
+   if (!tokenFromCookie) {
+     return res.redirect("/swagger-access");
+   }
+  jwt.verify(tokenFromCookie, JWT_Secret, async (err, decodedToken) => {
+    if (err) {
+      console.log("Token is wrong");
+      return res.status(401).json({ err: "Unauthorized user" });
+    }
+
+
+    try {
+
+      const access = decodedToken.payload.accessCode;
+      const creds = decodedToken.payload.username;
+
+      if (access !== undefined) {
+        const verified = checkAccessCode(access);
+        if (verified) {
+          next();
+        }
+      } else if (creds !== undefined) {
+        const verified = verifyCredentials(
+          decodedToken.payload.username,
+          decodedToken.payload.password
+        );
+        if (verified) {
+          next();
+        }
+      } else {
+        throw new Error("No Access Code and No Credentials");
+      }
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json({ err: "Server Error. Please retry later" });
+    }
   }
-  next();
+  
+  );
 };
-
-
 
 module.exports = {
   verifyRole,

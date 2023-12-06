@@ -1,96 +1,160 @@
 <!DOCTYPE html>
 <html>
-
-<head>
+  <head>
     <title>Swagger Access</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+      }
 
-        .form-container {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
+      .form-container {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
 
-        h2 {
-            text-align: center;
-        }
+      h2 {
+        text-align: center;
+      }
 
-        .form-group {
-            margin-bottom: 15px;
-        }
+      .form-group {
+        margin-bottom: 15px;
+      }
 
-        label {
-            display: block;
-            margin-bottom: 5px;
-        }
+      label {
+        display: block;
+        margin-bottom: 5px;
+      }
 
-        input[type="text"],
-        input[type="password"] {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
+      input[type="text"],
+      input[type="password"] {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        box-sizing: border-box;
+      }
 
-        .button {
-            width: 100%;
-            padding: 10px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
+      .button {
+        width: 100%;
+        padding: 10px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
 
-        .button:hover {
-            background-color: #0056b3;
-        }
+      .button:hover {
+        background-color: #0056b3;
+      }
+      .separator {
+        text-align: center;
+        position: relative;
+        margin: 20px 0;
+      }
+
+      
+      .separator:before,
+      .separator:after {
+        content: "";
+        background: #ddd;
+        height: 1px;
+        position: absolute;
+        top: 50%;
+        width: 40%;
+      }
+
+      .separator:before {
+        left: 5%;
+      }
+
+      .separator:after {
+        right: 5%;
+      }
+
+      .separator span {
+        background: white;
+        padding: 0 10px;
+        position: relative;
+        z-index: 1;
+      }
     </style>
-</head>
+  </head>
 
-<body>
+  <body>
     <div class="form-container">
-        <h2>Access Swagger</h2>
-        <form id="swaggerAccessForm" action="/verify-swagger-access" method="post">
-            <div class="form-group">
-                <label>Username:</label>
-                <input type="text" name="username" id="username">
-            </div>
-            <div class="form-group">
-                <label>Password:</label>
-                <input type="password" name="password" id="password">
-            </div>
-            <div class="form-group">
-                <label>Access Code:</label>
-                <input type="text" name="accessCode" id="accessCode">
-            </div>
-            <button type="submit" class="button">Access Swagger</button>
-        </form>
+      <h2>Access Swagger</h2>
+      <form id="swaggerAccessForm">
+        <div class="form-group">
+          <label>Username:</label>
+          <input
+            type="text"
+            name="username"
+            id="username"
+            autocomplete="username"
+          />
+        </div>
+        <div class="form-group">
+          <label>Password:</label>
+          <input
+            type="password"
+            name="password"
+            id="password"
+            autocomplete="current-password"
+          />
+        </div>
+        <div class="separator"><span>OR</span></div>
+        <div class="form-group">
+          <label>Access Code:</label>
+          <input
+            type="text"
+            name="accessCode"
+            id="accessCode"
+            autocomplete="accessCode"
+          />
+        </div>
+        <button type="submit" class="button">Access Swagger</button>
+      </form>
     </div>
 
     <script>
-        window.onload = function () {
-            const urlSearchParams = new URLSearchParams(window.location.search);
-            const params = Object.fromEntries(urlSearchParams.entries());
+      document
+        .getElementById("swaggerAccessForm")
+        .addEventListener("submit", function (event) {
+          event.preventDefault();
+          const formData = new FormData(this);
 
-            if (params.accessCode) {
-                document.getElementById('accessCode').value = params.accessCode;
+          fetch("/verify-swagger-access", {
+            method: "POST",
+            body: formData,
+            credentials: "include",
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              if (!data.success) {
+                alert("Authentication failed html");
+              } else {
+                window.location.href = "/swagger";
+              }
+            })
+            .catch((error) => console.error("Error:", error));
+        });
 
-                document.getElementById('swaggerAccessForm').submit();
-            }
-        };
+      window.onload = function () {
+        const urlSearchParams = new URLSearchParams(window.location.search);
+        const params = Object.fromEntries(urlSearchParams.entries());
+        if (params.accessCode) {
+          document.getElementById("accessCode").value = params.accessCode;
+        }
+      };
     </script>
-</body>
-
+  </body>
 </html>

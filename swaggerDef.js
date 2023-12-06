@@ -21,7 +21,7 @@ const options = {
     },
     servers: [
       {
-        url: `${process.env.Environment}`,
+        url: process.env.Environment,
         name: "Spec",
       },
     ],

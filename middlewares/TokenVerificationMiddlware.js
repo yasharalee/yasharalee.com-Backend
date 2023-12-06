@@ -9,7 +9,8 @@ const verifyToken = async(req, res, next) => {
     req.headers && req.headers["authorization"]
       ? req.headers["authorization"].split(" ")[1]
       : null;
-  const token = tokenFromCookie || tokenFromHeader;
+  const token = tokenFromHeader || tokenFromCookie;
+
   
   if (!token) {
     console.log("No token has been sent along with request");
@@ -86,7 +87,7 @@ const verifyUserName = (req, res, next) => {
   try {
     if (fullName !== userName || normalizedEmail !== email) {
       req.userNameVerified = false;
-      console.log("Please keep name and email unchanged to proceed.");
+
       return res.status(400).json({
         success: false,
         err: "Please keep name and email unchanged to proceed.",

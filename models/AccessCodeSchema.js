@@ -1,21 +1,24 @@
 const mongoose = require("mongoose");
 
-const AccessCodeSchema = new mongoose.Schema({
-  token: {
-    type: String,
-    required: true,
+const AccessCodeSchema = new mongoose.Schema(
+  {
+    AC: {
+      type: String,
+      required: true,
+    },
+    expiresAt: {
+      type: Date,
+      required: true,
+    },
+    scope: {
+      type: [String],
+      required: true,
+      enum: ["swagger", "admin", "visitor"],
+    },
+    token: {
+      type: String,
+    },
   },
-  expiresAt: {
-    type: Date,
-    required: true,
-  },
-  scope: {
-    type: [String],
-    required: true,
-    enum: ["swagger", "admin", "visitor"]
-  },
-  
-},
   {
     timestamps: true,
   }
