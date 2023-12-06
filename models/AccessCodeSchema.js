@@ -10,10 +10,7 @@ const AccessCodeSchema = new mongoose.Schema(
       type: [String],
       required: true,
       enum: ["swagger", "admin", "visitor"],
-    },
-    token: {
-      type: String,
-    },
+    }
   },
   {
     timestamps: true,

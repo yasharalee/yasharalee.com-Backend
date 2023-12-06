@@ -137,8 +137,8 @@
             credentials: "include",
           })
             .then((response) => {
-              if (response.status === 403) {
-                throw new Error("Access denied (Forbidden)");
+              if (response.status >= 400 && response.status < 500) {
+                throw new Error("Unable to grant the access");
               }
               return response.json();
             })
@@ -155,7 +155,7 @@
             })
             .catch((error) => {
               if (
-                error.message.includes("Forbidden") ||
+                error.message.includes("Unable to grant") ||
                 error.message.includes("went wrong") ||
                 error.message.includes("Authentication")
               ) {

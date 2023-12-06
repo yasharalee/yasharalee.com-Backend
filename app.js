@@ -29,7 +29,7 @@ const sesClient = new SESClient({ region: process.env.Region });
 
 const multerMiddleware = multer().none();
 
-const allowedOrigins = [process.env.UI_Env, process.env.SWAGGER_CORS_ENV];
+const allowedOrigins = [process.env.UI_Env, process.env.Environment];
 
 app.use(
   cors({
