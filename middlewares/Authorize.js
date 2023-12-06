@@ -8,17 +8,25 @@ const { promisify } = require("util");
 const jwtVerify = promisify(jwt.verify);
 
 const verifyRole = (role) => {
-  return function (req, res, next) {
+  return async function (req, res, next) {
     try {
-      if (req.user && req.user.role.includes(role)) {
+      const roleSecret = await (async () => await getSecret("role"))();
+
+      console.log(roleSecret);
+
+      if (
+        req.user &&
+        req.user.role === roleSecret &&
+        req.user.role.includes(role)
+      ) {
         next();
       } else {
         return res
           .status(403)
-          .send({ err: "You are unauthorised to perform this action" });
+          .send({ err: "You are unauthorized to perform this action" });
       }
     } catch (err) {
-      console.log(err);
+      console.error(err);
       return res.status(500).json({ err: "Server Error" });
     }
   };
@@ -47,14 +55,10 @@ const safeCompare = (a, b) => {
 };
 
 async function checkAccessCode(accessCode, requiredScope) {
-
   try {
     const accessToken = await AccessCode.findOne({ AC: accessCode });
 
-    if (
-      accessToken &&
-      accessToken.scope.includes(requiredScope)
-    ) {
+    if (accessToken && accessToken.scope.includes(requiredScope)) {
       return true;
     }
     return false;
@@ -70,7 +74,7 @@ async function verifyCredentials(userName, passWord) {
     const password = await getSecret("BASIC_AUTH_PASSWORD");
     const userMatches = userName === username;
     const passwordMatches = passWord === password;
-    
+
     return userMatches && passwordMatches;
   } catch (error) {
     console.error("Error in verifyCredentials:", error);
@@ -86,7 +90,7 @@ const swaggerCreds = async (req, res, next) => {
     if (isValidAccessCode) {
       const token = await jwtCookie.generateToken({ accessCode });
 
-       jwtCookie.setHttpOnlyCookie(
+      jwtCookie.setHttpOnlyCookie(
         res,
         "access-token",
         token,
@@ -110,7 +114,7 @@ const swaggerCreds = async (req, res, next) => {
         new Date(Date.now() + 2 * 60 * 60 * 1000),
         "/"
       );
-       return res.status(200).json({success: true});
+      return res.status(200).json({ success: true });
     } else {
       return res.status(401).send("Invalid credentials 116");
     }
@@ -118,8 +122,6 @@ const swaggerCreds = async (req, res, next) => {
 
   return res.status(400).send("Credentials or access code required");
 };
-
-
 
 const isAuthenticated = async (req, res, next) => {
   try {
@@ -157,7 +159,6 @@ const isAuthenticated = async (req, res, next) => {
     return res.status(500).json({ err: "Server Error. Please retry later" });
   }
 };
-
 
 module.exports = {
   verifyRole,

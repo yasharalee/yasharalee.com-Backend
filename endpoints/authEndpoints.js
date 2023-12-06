@@ -37,24 +37,30 @@ const isSignedin = async (req, res, next) => {
   }
 };
 
-const getPermission = async (req, res) => {
-  const { user } = req;
-  try {
-    if (user.role === process.env.role) {
-      return res.status(200).send({ permited: true, err: null });
-    } else {
-      return res.status(403).send({
-        permited: false,
-        err: "You are not permited to do this action",
-      });
+const getPermission = (req, res, next) => {
+  (async () => {
+    try {
+      const roleSecret = await getSecret("role");
+      console.log(roleSecret);
+
+      const { user } = req;
+      if (user.role === roleSecret) {
+        return res.status(200).send({ permitted: true, err: null });
+      } else {
+        return res.status(403).send({
+          permitted: false,
+          err: "You are not permitted to do this action",
+        });
+      }
+    } catch (err) {
+      console.error(err);
+      return res
+        .status(500)
+        .send({ permitted: false, err: "Server Error. Please retry later." });
     }
-  } catch (err) {
-    console.log(err);
-    return res
-      .status(500)
-      .send({ permited: false, err: "Server Error. Please retry later." });
-  }
+  })();
 };
+
 
 const googleCanceled = (req, res, next) => {
   res.redirect("https://yaslanding.com/auth-cancelled");
