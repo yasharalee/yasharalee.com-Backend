@@ -118,47 +118,48 @@ const swaggerCreds = async (req, res, next) => {
   return res.status(400).send("Credentials or access code required");
 };
 
-const isAuthenticated = async (req, res, next) => {
-  const JWT_Secret = await getSecret("JWT_SECRET");
+const isAuthenticated = (req, res, next) => {
   const tokenFromCookie = req.cookies ? req.cookies["access-token"] : null;
 
    if (!tokenFromCookie) {
      return res.redirect("/swagger-access");
    }
-  jwt.verify(tokenFromCookie, JWT_Secret, async (err, decodedToken) => {
-    if (err) {
-      console.log("Token is wrong");
-      return res.status(401).json({ err: "Unauthorized user" });
-    }
-
-
-    try {
-
-      const access = decodedToken.payload.accessCode;
-      const creds = decodedToken.payload.username;
-
-      if (access !== undefined) {
-        const verified = checkAccessCode(access);
-        if (verified) {
-          next();
-        }
-      } else if (creds !== undefined) {
-        const verified = verifyCredentials(
-          decodedToken.payload.username,
-          decodedToken.payload.password
-        );
-        if (verified) {
-          next();
-        }
-      } else {
-        throw new Error("No Access Code and No Credentials");
+  jwt.verify(
+    tokenFromCookie,
+    process.env.JWT_SECRET,
+    async (err, decodedToken) => {
+      if (err) {
+        console.log("Token is wrong");
+        return res.status(401).json({ err: "Unauthorized user" });
       }
-    } catch (err) {
-      console.error(err);
-      return res.status(500).json({ err: "Server Error. Please retry later" });
+
+      try {
+        const access = decodedToken.payload.accessCode;
+        const creds = decodedToken.payload.username;
+
+        if (access !== undefined) {
+          const verified = checkAccessCode(access);
+          if (verified) {
+            next();
+          }
+        } else if (creds !== undefined) {
+          const verified = verifyCredentials(
+            decodedToken.payload.username,
+            decodedToken.payload.password
+          );
+          if (verified) {
+            next();
+          }
+        } else {
+          throw new Error("No Access Code and No Credentials");
+        }
+      } catch (err) {
+        console.error(err);
+        return res
+          .status(500)
+          .json({ err: "Server Error. Please retry later" });
+      }
     }
-  }
-  
   );
 };
 

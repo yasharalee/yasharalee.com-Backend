@@ -3,7 +3,8 @@ const User = require("../models/User");
 const {getSecret} = require('../utils/secretsUtil');
 
 const verifyToken = async(req, res, next) => {
- const JWT_Secret = await getSecret("JWT_SECRET");
+
+ const JWT_Secret = process.env.JWT_SECRET;
   const tokenFromCookie = req.cookies ? req.cookies["access-token"] : null;
   const tokenFromHeader =
     req.headers && req.headers["authorization"]
@@ -43,8 +44,8 @@ const verifyToken = async(req, res, next) => {
   });
 };
 
-const justAddUserIfAny = async (req, res, next) => {
-  const JWT_Secret = await getSecret("JWT_SECRET");
+const justAddUserIfAny = (req, res, next) => {
+  const JWT_Secret = process.env.JWT_SECRET;
   const tokenFromCookie = req.cookies ? req.cookies["access-token"] : null;
   const tokenFromHeader =
     req.headers && req.headers["authorization"]

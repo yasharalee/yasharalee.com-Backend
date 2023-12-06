@@ -5,6 +5,7 @@ const jwtCookie = require("../utils/tokenUtils");
 const mailit = require("../utils/emailUtils");
 const crypto = require("crypto");
 const AccessCode = require("../models/AccessCodeSchema");
+const { getSecret } = require("../utils/secretsUtil");
 
 const google = (req, res, next) => {
   passport.authenticate("google", {
@@ -36,7 +37,7 @@ const isSignedin = (req, res, next) => {
   }
 };
 
-const getPermission = (req, res) => {
+const getPermission = async (req, res) => {
   const { user } = req;
   try {
     if (user.role === process.env.role) {
